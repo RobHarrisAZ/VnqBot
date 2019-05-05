@@ -10,11 +10,12 @@
   },
   "keywords": [],
   "author": "Infidelux",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
-    "googleapis": "^39.2.0"
+    "googleapis": "^39.2.0",
+    "node-fetch": "^2.5.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.0"

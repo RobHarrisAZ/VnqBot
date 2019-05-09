@@ -3,6 +3,7 @@ const { Client, RichEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const TurndownService = require('turndown');
 const { addDays, differenceInHours, format, isSameDay } = require('date-fns');
+const bbConvert = require('bbcode-to-markdown');
 
 const turndownService = new TurndownService();
 const client = new Client();
@@ -10,7 +11,9 @@ const gApiKey = process.env.GAPI_KEY;
 const calendarId = process.env.CALENDAR_ID;
 
 let calendarData = null;
+let vCalendarData = null;
 let filteredEvents = [];
+let vFilteredEvents = [];
 let channelTargets = [];
 
 client.on('ready', () => {
@@ -21,6 +24,11 @@ client.on('ready', () => {
             filteredEvents.sort(dateSort);
             console.log(`Loaded events`);
         });
+    getVEventData()
+        .then(function () {
+            vCalendarData.event_objects.forEach(processTimezones);
+            vCalendarData.event_objects.forEach(processEvent);
+        })
 });
 
 client.on('message', msg => {
@@ -138,26 +146,44 @@ function getHelpMessage() {
     \n!help: Display this help info about commands. `);
 }
 function processTimezones(item) {
-    const startDateTime = new Date(item.start.dateTime);
+    let startDateTime = null;
+    if (item.hasOwnProperty('start')) {
+        startDateTime = new Date(item.start.dateTime);
+    }
+    if (item.hasOwnProperty('event_category_id')) {
+        startDateTime = new Date(item.date);
+    }
     const startHour = startDateTime.getHours();
     const startMinutes = padZero(startDateTime.getMinutes().toString(), 2);
 
     item.pst = `${padZero(startHour.toString())}:${startMinutes}`;
     //item.mst = `${startHour}:${startMinutes}`;
-    item.cst = `${padZero((startHour+2).toString(), 2)}:${startMinutes}`;
-    item.est = `${padZero((startHour+3).toString(), 2)}:${startMinutes}`;
+    item.cst = `${padZero((startHour + 2).toString(), 2)}:${startMinutes}`;
+    item.est = `${padZero((startHour + 3).toString(), 2)}:${startMinutes}`;
+}
+function processEvent(item) {
+    const category = vCalendarData.event_categories.find((row) => row.id === item.event_category_id);
+    item.category = category ? category.name : '';
+    item.event_id = vCalendarData.events.find((row) => row.event_id === item.id).id;
+    item.link = `${process.env.GUILD_SITE}/events/${item.id}?event_instance_id=${item.event_id}`;
 }
 function getEventData(pageToken) {
     return getCalendarData(pageToken)
     .then(cal => {
         calendarData = cal;
-        events = calendarData.items.filter(isFutureEvent);
+        const events = calendarData.items.filter(isFutureEvent);
         filteredEvents = filteredEvents.concat(events);
         if (calendarData.nextPageToken) {
             return getEventData(calendarData.nextPageToken);
         }
     });
-};
+}
+function getVEventData() {
+    return getVCalendarData()
+        .then(cal => {
+            vCalendarData = cal;
+        });
+}
 function isFutureEvent(item) {
     if (item.kind === 'calendar#event' && item.status !== 'cancelled') {
         const now = new Date();
@@ -199,6 +225,21 @@ function getCalendarData(pageToken) {
             console.log(err);
         });
 };
+function getVCalendarData() {
+    return fetch(`${process.env.GUILD_SITE}/events.json`,
+        {
+            method: 'GET',
+            headers: {
+            'Accept': 'application/json'
+        }
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
 function padZero(value, size) {
     while (value.length < (size || 2)) {
         value = "0" + value;
@@ -215,3 +256,4 @@ function dateSort(item1, item2) {
       
     return 0;        
 }
+

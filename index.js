@@ -60,7 +60,7 @@ client.on('message', msg => {
     }
     if (msg.content.startsWith('!today')) {
         if (msg.content === '!today') {
-            msg.channel.send(getDayEvents(Date.now()));
+            msg.channel.send(getDayEvents(new Date(Date.now())));
         } else if (msg.content.startsWith('!today+') && !isNaN(msg.content.substr(msg.content.indexOf('+') + 1))) {
             const numberOfDays = parseInt(msg.content.substr(msg.content.indexOf('+') + 1));
             msg.channel.send(getDayEvents(addDays(Date.now(), numberOfDays)));
@@ -91,8 +91,8 @@ client.login(process.env.BOT_TOKEN);
 function loadEvents() {
     return getVEventData()
         .then(function () {
-            vCalendarData.event_objects.forEach(processEvent);
-            vFilteredEvents = vCalendarData.event_objects.filter(isFutureEvent);
+            vCalendarData.events.forEach(processEvents);
+            vFilteredEvents = vCalendarData.events.filter(isFutureEvent);
             vFilteredEvents.sort(dateSort);
         });
 }
@@ -131,18 +131,18 @@ function getVEventAlarm(item) {
 function getDayEvents(day) {
     let description = '';
     if (day === undefined) {
-        day = Date.now();
+        day = new Date(Date.now());
     }
 
     const todaysEvents = getEvents(day);
 
     todaysEvents.forEach(item => {
-        item.info = `Event Name/Link: <a href="${item.link}">${item.name}</a>
-        <br/>PT: ${format(new Date().setHours(item.pst.substr(0, 2),item.pst.substr(3, 2)), 'hh:mm a')}
-        <br/>CT: ${format(new Date().setHours(item.cst.substr(0, 2),item.cst.substr(3, 2)), 'hh:mm a')}
-        <br/>ET: ${format(new Date().setHours(item.est.substr(0, 2),item.est.substr(3, 2)), 'hh:mm a')}
+        const info = `Event Name/Link: <a href="${item.event.link}">${item.event.name}</a>
+        <br/>PT: ${format(new Date().setHours(item.event.pst.substr(0, 2),item.event.pst.substr(3, 2)), 'hh:mm a')}
+        <br/>CT: ${format(new Date().setHours(item.event.cst.substr(0, 2),item.event.cst.substr(3, 2)), 'hh:mm a')}
+        <br/>ET: ${format(new Date().setHours(item.event.est.substr(0, 2),item.event.est.substr(3, 2)), 'hh:mm a')}
         <br/><br/>`;
-        description = description.concat(item.info);
+        description = description.concat(info);
     });
 
     return new RichEmbed()
@@ -155,16 +155,13 @@ function getEvents(day) {
         day = Date.now();
     }
     
-    return vCalendarData.event_objects.filter(item => {
-        const eventDate = new Date(new Date(item.eventDate));
+    return vCalendarData.events.filter(item => {
+        const eventDate = new Date(item.eventDate);
         return isSameDay(day, eventDate);
     }).sort(dateSort); 
 }
 function processTimezones(item) {
     let startDateTime = null;
-    if (item.hasOwnProperty('start')) {
-        startDateTime = new Date(item.start.dateTime);
-    }
     if (item.hasOwnProperty('event_category_id')) {
         startDateTime = new Date(item.eventDate);
     }
@@ -176,21 +173,17 @@ function processTimezones(item) {
     item.cst = `${padZero((startHour + 2).toString(), 2)}:${startMinutes}`;
     item.est = `${padZero((startHour + 3).toString(), 2)}:${startMinutes}`;
 }
-function processEvent(item) {
-    const category = vCalendarData.event_categories.find((row) => row.id === item.event_category_id);
-    const event = vFilteredEvents.find((row) => row.event_id === item.id);
+function processEvents(item) {
+    const eventObj = vCalendarData.event_objects.find((row) => row.id === item.event_id);
+    const category = vCalendarData.event_categories.find((row) => row.id === eventObj.event_category_id);
 
-    item.category = category ? category.name : '';
+    item.eventDate = item.date;
+    item.event = eventObj;
+    item.event.eventDate = item.eventDate;
+    item.event.category = category ? category.name : 'None';
 
-    if (event === undefined) {
-        item.eventDate = null;
-        item.link = null;
-    } else {
-        item.event_id = event.id;
-        item.eventDate = event.date;
-        item.link = `${process.env.GUILD_SITE}/events/${item.id}?event_instance_id=${item.event_id}`;
-        processTimezones(item);
-    }
+    item.event.link = `${process.env.GUILD_SITE}/events/${item.id}?event_instance_id=${item.event_id}`;
+    processTimezones(item.event);
 }
 function getVEventData() {
     return getVCalendarData()
@@ -202,27 +195,7 @@ function getVEventData() {
 }
 function isFutureEvent(item) {
     const now = new Date();
-    if (item.hasOwnProperty('kind') && item.kind === 'calendar#event' && item.status !== 'cancelled') {
-        const eventDate = new Date(item.start.dateTime);
-        const endDate = null;
-
-        if (item.recurrence && item.recurrence.length) {
-            for (let index = 0; index < item.recurrence.length; index++) {
-                let endDateStart = -1;
-                let endDateEnd = -1;
-                endDateStart = item.recurrence[index].indexOf('UNTIL=');
-                if (endDateStart > -1) {
-                    endDateEnd = item.recurrence[index].indexOf(';', endDateStart);
-                    endDate = new Date(item.recurrence[index].substring(endDateStart+6, endDateEnd));
-                }
-                if (endDate !== null) {
-                    break;
-                }
-            }
-        }
-        return now.getTime() < eventDate.getTime() ||
-            (endDate !== null && now.getTime() < endDate.getTime());
-    } else if (item.hasOwnProperty('event_id')) {
+    if (item.hasOwnProperty('event_id')) {
         const eventDate = new Date(item.date);
         return now.getTime() < eventDate.getTime();        
     }
@@ -262,14 +235,7 @@ function padZero(value, size) {
     return value;
 }
 function dateSort(item1, item2) {
-    if (item1.hasOwnProperty('start')) {
-        if (differenceInHours(new Date(item1.start.dateTime), new Date(item2.start.dateTime)) > 0) {
-            return 1;
-        }
-        if (differenceInHours(new Date(item1.start.dateTime), new Date(item2.start.dateTime)) < 0) {
-            return -1;
-        }
-    } else if (item1.hasOwnProperty('eventDate')) { 
+    if (item1.hasOwnProperty('eventDate')) { 
         if (differenceInMinutes(new Date(item1.eventDate), new Date(item2.eventDate)) > 0) {
             return 1;
         }

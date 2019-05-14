@@ -1,8 +1,9 @@
 require('dotenv').config();
-const { Client, RichEmbed } = require('discord.js');
+const CronJob = require('node-cron');
+const { Client, Channel, RichEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 const TurndownService = require('turndown');
-const { addDays, differenceInHours, format, isSameDay } = require('date-fns');
+const { addDays, differenceInHours, differenceInMinutes, format, isSameDay } = require('date-fns');
 const bbConvert = require('bbcode-to-markdown');
 
 const turndownService = new TurndownService();
@@ -14,21 +15,24 @@ let calendarData = null;
 let vCalendarData = null;
 let filteredEvents = [];
 let vFilteredEvents = [];
-let channelTargets = [];
+let channelTargets = [process.env.CHANNEL1, process.env.CHANNEL2];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    getEventData('')
-        .then(function () {
-            filteredEvents.forEach(processTimezones);
-            filteredEvents.sort(dateSort);
-            console.log(`Loaded events`);
+    loadEvents().then(() => {
+        console.log(`Loaded events`);
+    });
+    CronJob.schedule('10 0 * * *', function () {
+        loadEvents().then(() => {
+            console.log(`Events Refreshed`);
         });
-    getVEventData()
-        .then(function () {
-            vCalendarData.event_objects.forEach(processTimezones);
-            vCalendarData.event_objects.forEach(processEvent);
-        })
+    }, null, true, 'America/Los_Angeles');
+    CronJob.schedule('*/15 * * * *', checkEvents, null, true, 'America/Los_Angeles');
+    CronJob.schedule('0 3 * * *', function () {
+        channelTargets.forEach(item => {
+            client.channels.get(item.id).send(getDayEvents(Date.now()));
+        });
+    }, null, true, 'America/Los_Angeles');
 });
 
 client.on('message', msg => {
@@ -37,22 +41,19 @@ client.on('message', msg => {
 
     }
     if (msg.content === '!refresh') {
-        filteredEvents.length = 0;
-        getEventData('')
-            .then(function () {
-                filteredEvents.forEach(processTimezones);
-                filteredEvents.sort(dateSort);
-                const embed2 = new RichEmbed()
+        vFilteredEvents.length = 0;
+        loadEvents().then(() => {
+            const embed2 = new RichEmbed()
                 .setTitle('Calendar Retrieved!')
                 .setColor(0x00FFFF)
-                .setDescription(`Count: ${filteredEvents.length}`);
-                msg.channel.send(embed2);
-        })
+                .setDescription(`Count: ${vFilteredEvents.length}`);
+            msg.channel.send(embed2);
+        });
     }
     if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))){
         const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
-        if (filteredEvents.length > index + 1) {
-            msg.channel.send(getEventAlarm(filteredEvents[index]));
+        if (vCalendarData.event_objects.length > index + 1) {
+            msg.channel.send(getVEventAlarm(vCalendarData.event_objects[index]));
         } else {
             msg.reply(getErrorMessage('Invalid event'));
         }
@@ -65,24 +66,38 @@ client.on('message', msg => {
             msg.channel.send(getDayEvents(addDays(Date.now(), numberOfDays)));
         }
     }
-    if (msg.content.startsWith('!channels')) {
+    if (msg.content.startsWith('!channel')) {
         if (msg.content === '!channels') {
             msg.channel.send(getChannelList());
         }
-        if (msg.content === '!channels add') {
-            channelTargets.push(msg.channel.name);
-            msg.channel.send(`${msg.channel.name} added to the broadcast list`);
+        // if (msg.content === '!channels add') {
+        //     channelTargets.push({ id: msg.channel.id, name: msg.channel.name });
+        //     msg.channel.send(`${msg.channel.name} added to the broadcast list`);
+        // }
+        if (msg.content === '!channelinfo') {
+            msg.channel.send(`${msg.channel.id} ${msg.channel.name}`);
         }
     }
-
+    if (msg.content.startsWith('!ttp')) {
+        msg.channel.send('Coming soon');
+    }
 });
 
 client.login(process.env.BOT_TOKEN);
 
+function loadEvents() {
+    return getVEventData()
+        .then(function () {
+            vCalendarData.event_objects.forEach(processEvent);
+            vFilteredEvents = vCalendarData.event_objects.filter(isFutureEvent);
+            vFilteredEvents.sort(dateSort);
+        });
+}
+
 function getChannelList() {
     let channelList = '';
     channelTargets.forEach(item => {
-        channelList = channelList.concat(item, '<br/>');
+        channelList = channelList.concat(`ID:${item.id}, Name: ${item.name} <br/>`);
     });
     return new RichEmbed()
         .setTitle('Channel List')
@@ -95,35 +110,34 @@ function getErrorMessage(message) {
         .setColor(0xFF0000)
         .setDescription(``);
 }
-function getEventAlarm(item) {
+function getVEventAlarm(item) {
+    if (!item.eventDate) {
+        return getErrorMessage('Invalid Event- not scheduled');
+    }
+    const description = turndownService.turndown(
+        `Start: ${format(new Date(item.eventDate), 'MM/DD/YYYY')}
+            <br/>PT: ${format(new Date().setHours(item.pst.substr(0, 2), item.pst.substr(3, 2)), 'hh:mm a')}
+            <br/>CT: ${format(new Date().setHours(item.cst.substr(0, 2), item.cst.substr(3, 2)), 'hh:mm a')}
+            <br/>ET: ${format(new Date().setHours(item.est.substr(0, 2), item.est.substr(3, 2)), 'hh:mm a')}
+            <br/><br/>${bbConvert(item.description)}`);
     return new RichEmbed()
-    .setTitle(item.summary)
-    .setColor(0x00FFFF)
-        .setDescription(
-            decodeURIComponent(
-                turndownService.turndown(
-                    `Start: ${format(new Date(item.start.dateTime), 'MM/DD/YYYY')}
-                    <br/>PT: ${item.pst}
-                    <br/>CT: ${item.cst}
-                    <br/>ET: ${item.est}
-                    <br/><br/>${item.description}`)));
+        .setTitle(item.name)
+        .setColor(0x00FFFF)
+        .setDescription(description ? description.substr(0, 2048) : '');
 }
 function getDayEvents(day) {
     let description = '';
     if (day === undefined) {
         day = Date.now();
     }
-    
-    const todaysEvents = filteredEvents.filter(item => {
-        const eventDate = new Date(new Date(item.start.dateTime));
-        return isSameDay(day, eventDate);            
-    }).sort(dateSort);
+
+    const todaysEvents = getEvents(day);
 
     todaysEvents.forEach(item => {
-        item.info = `Event Name/Link: <a href="${item.htmlLink}">${item.summary}</a>
-        <br/>PT: ${item.pst}
-        <br/>CT: ${item.cst}
-        <br/>ET: ${item.est}
+        item.info = `Event Name/Link: <a href="${item.link}">${item.name}</a>
+        <br/>PT: ${format(new Date().setHours(item.pst.substr(0, 2),item.pst.substr(3, 2)), 'hh:mm a')}
+        <br/>CT: ${format(new Date().setHours(item.cst.substr(0, 2),item.cst.substr(3, 2)), 'hh:mm a')}
+        <br/>ET: ${format(new Date().setHours(item.est.substr(0, 2),item.est.substr(3, 2)), 'hh:mm a')}
         <br/><br/>`;
         description = description.concat(item.info);
     });
@@ -131,19 +145,17 @@ function getDayEvents(day) {
     return new RichEmbed()
         .setTitle(`${process.env.GUILD_NAME} Daily Events - ${format(day, 'MM/DD/YYYY')}\nToday's Activities`)
         .setColor(0xFF00FF)
-        .setDescription(turndownService.turndown(description));
+        .setDescription(turndownService.turndown(description).substr(0, 2047));
 }
-function getHelpMessage() {
-    return new RichEmbed()
-    .setTitle('Vanquish Bot Commands')
-    .setColor(0x750080)
-        .setDescription(`!refresh: Refresh the data from Google Calendar.
-    \n!cal ###: Show event ### where ### is a number from 0 to ${filteredEvents.length}.
-    \n!channels: Show channels that events will be broadcast to.
-    \n!channels add: Add the current channel to the broadcast list.
-    \n!today: Show today's events.
-    \n!today+#: Show events from # days in the future.
-    \n!help: Display this help info about commands. `);
+function getEvents(day) {
+    if (day === undefined) {
+        day = Date.now();
+    }
+    
+    return vCalendarData.event_objects.filter(item => {
+        const eventDate = new Date(new Date(item.eventDate));
+        return isSameDay(day, eventDate);
+    }).sort(dateSort); 
 }
 function processTimezones(item) {
     let startDateTime = null;
@@ -151,7 +163,7 @@ function processTimezones(item) {
         startDateTime = new Date(item.start.dateTime);
     }
     if (item.hasOwnProperty('event_category_id')) {
-        startDateTime = new Date(item.date);
+        startDateTime = new Date(item.eventDate);
     }
     const startHour = startDateTime.getHours();
     const startMinutes = padZero(startDateTime.getMinutes().toString(), 2);
@@ -163,30 +175,31 @@ function processTimezones(item) {
 }
 function processEvent(item) {
     const category = vCalendarData.event_categories.find((row) => row.id === item.event_category_id);
+    const event = vFilteredEvents.find((row) => row.event_id === item.id);
+
     item.category = category ? category.name : '';
-    item.event_id = vCalendarData.events.find((row) => row.event_id === item.id).id;
-    item.link = `${process.env.GUILD_SITE}/events/${item.id}?event_instance_id=${item.event_id}`;
-}
-function getEventData(pageToken) {
-    return getCalendarData(pageToken)
-    .then(cal => {
-        calendarData = cal;
-        const events = calendarData.items.filter(isFutureEvent);
-        filteredEvents = filteredEvents.concat(events);
-        if (calendarData.nextPageToken) {
-            return getEventData(calendarData.nextPageToken);
-        }
-    });
+
+    if (event === undefined) {
+        item.eventDate = null;
+        item.link = null;
+    } else {
+        item.event_id = event.id;
+        item.eventDate = event.date;
+        item.link = `${process.env.GUILD_SITE}/events/${item.id}?event_instance_id=${item.event_id}`;
+        processTimezones(item);
+    }
 }
 function getVEventData() {
     return getVCalendarData()
         .then(cal => {
             vCalendarData = cal;
+            vFilteredEvents = vCalendarData.events.filter(isFutureEvent);
+            vFilteredEvents.sort(dateSort);
         });
 }
 function isFutureEvent(item) {
-    if (item.kind === 'calendar#event' && item.status !== 'cancelled') {
-        const now = new Date();
+    const now = new Date();
+    if (item.hasOwnProperty('kind') && item.kind === 'calendar#event' && item.status !== 'cancelled') {
         const eventDate = new Date(item.start.dateTime);
         const endDate = null;
 
@@ -206,24 +219,10 @@ function isFutureEvent(item) {
         }
         return now.getTime() < eventDate.getTime() ||
             (endDate !== null && now.getTime() < endDate.getTime());
-    } else {
-        return false;
+    } else if (item.hasOwnProperty('event_id')) {
+        const eventDate = new Date(item.date);
+        return now.getTime() < eventDate.getTime();        
     }
-};
-function getCalendarData(pageToken) {
-    return fetch(`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?singleEvents=true&key=${gApiKey}&pageToken=${pageToken}`,
-        {
-            method: 'GET',
-            headers: {
-            'Accept': 'application/json'
-        }
-    })
-        .then(response => {
-            return response.json();
-        })
-        .catch(err => {
-            console.log(err);
-        });
 };
 function getVCalendarData() {
     return fetch(`${process.env.GUILD_SITE}/events.json`,
@@ -240,6 +239,19 @@ function getVCalendarData() {
             console.log(err);
         });
 }
+function getHelpMessage() {
+    return new RichEmbed()
+    .setTitle('Vanquish Bot Commands')
+    .setColor(0x750080)
+        .setDescription(`
+    \n!cal ###: Show event ### where ### is a number from 0 to ${vFilteredEvents.length}.
+    \n!channels: Show channels that events will be broadcast to.
+    \n!channelinfo: View the current channel's ID and name.
+    \n!today: Show today's events.
+    \n!today+#: Show events from # days in the future.
+    \n!refresh: Force a reload of events.
+    \n!help: Display this help info about commands. `);
+}
 function padZero(value, size) {
     while (value.length < (size || 2)) {
         value = "0" + value;
@@ -247,13 +259,40 @@ function padZero(value, size) {
     return value;
 }
 function dateSort(item1, item2) {
-    if (differenceInHours(new Date(item1.start.dateTime), new Date(item2.start.dateTime)) > 0) {
-        return 1;
-    }
-    if (differenceInHours(new Date(item1.start.dateTime), new Date(item2.start.dateTime)) < 0) {
-        return -1;
+    if (item1.hasOwnProperty('start')) {
+        if (differenceInHours(new Date(item1.start.dateTime), new Date(item2.start.dateTime)) > 0) {
+            return 1;
+        }
+        if (differenceInHours(new Date(item1.start.dateTime), new Date(item2.start.dateTime)) < 0) {
+            return -1;
+        }
+    } else if (item1.hasOwnProperty('eventDate')) { 
+        if (differenceInMinutes(new Date(item1.eventDate), new Date(item2.eventDate)) > 0) {
+            return 1;
+        }
+        if (differenceInMinutes(new Date(item1.eventDate), new Date(item2.eventDate)) < 0) {
+            return -1;
+        }
     }
       
     return 0;        
 }
-
+function checkEvents() {
+    const now = Date.now();
+    const eventList = getEvents(now);
+    const upcoming = eventList.filter(item => {
+        if (item.eventDate) {
+            const eventDate = new Date(item.eventDate);
+            return differenceInMinutes(eventDate, now) === 45;
+        }
+        return false;
+    });
+    if (upcoming.length) {
+        upcoming.forEach(function (eventItem) {
+            const embed = getVEventAlarm(eventItem);
+            channelTargets.forEach(item => {
+                client.channels.get(item.id).send(embed);
+            });
+        });
+    }
+}

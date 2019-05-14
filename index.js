@@ -30,7 +30,7 @@ client.on('ready', () => {
     CronJob.schedule('*/15 * * * *', checkEvents, null, true, 'America/Los_Angeles');
     CronJob.schedule('0 3 * * *', function () {
         channelTargets.forEach(item => {
-            client.channels.get(item.id).send(getDayEvents(Date.now()));
+            client.channels.get(item).send(getDayEvents(Date.now()));
         });
     }, null, true, 'America/Los_Angeles');
 });
@@ -77,6 +77,9 @@ client.on('message', msg => {
         if (msg.content === '!channelinfo') {
             msg.channel.send(`${msg.channel.id} ${msg.channel.name}`);
         }
+    }
+    if (msg.content === '!checkevents') {
+        checkEvents();
     }
     if (msg.content.startsWith('!ttp')) {
         msg.channel.send('Coming soon');
@@ -283,7 +286,8 @@ function checkEvents() {
     const upcoming = eventList.filter(item => {
         if (item.eventDate) {
             const eventDate = new Date(item.eventDate);
-            return differenceInMinutes(eventDate, now) === 45;
+            diff = differenceInMinutes(eventDate, now);
+            return diff >= 44 && diff < 60;
         }
         return false;
     });
@@ -291,7 +295,7 @@ function checkEvents() {
         upcoming.forEach(function (eventItem) {
             const embed = getVEventAlarm(eventItem);
             channelTargets.forEach(item => {
-                client.channels.get(item.id).send(embed);
+                client.channels.get(item).send(embed);
             });
         });
     }

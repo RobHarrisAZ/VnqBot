@@ -46,7 +46,7 @@ client.on('message', msg => {
             const embed2 = new RichEmbed()
                 .setTitle('Calendar Retrieved!')
                 .setColor(0x00FFFF)
-                .setDescription(`Count: ${vFilteredEvents.length}`);
+                .setDescription(`Count: ${vCalendarData.events.length}`);
             msg.channel.send(embed2);
         });
     }
@@ -92,8 +92,8 @@ function loadEvents() {
     return getVEventData()
         .then(function () {
             vCalendarData.events.forEach(processEvents);
-            vFilteredEvents = vCalendarData.events.filter(isFutureEvent);
-            vFilteredEvents.sort(dateSort);
+            //vFilteredEvents = vCalendarData.events.filter(isFutureEvent);
+            //vFilteredEvents.sort(dateSort);
         });
 }
 
@@ -161,14 +161,12 @@ function getEvents(day) {
     }).sort(dateSort); 
 }
 function processTimezones(item) {
-    let startDateTime = null;
-    if (item.hasOwnProperty('event_category_id')) {
-        startDateTime = new Date(item.eventDate);
-    }
+    let startDateTime = new Date(item.eventDate);
+    
     const startHour = startDateTime.getHours();
     const startMinutes = padZero(startDateTime.getMinutes().toString(), 2);
 
-    item.pst = `${padZero(startHour.toString())}:${startMinutes}`;
+    item.pst = `${padZero(startHour.toString(), 2)}:${startMinutes}`;
     //item.mst = `${startHour}:${startMinutes}`;
     item.cst = `${padZero((startHour + 2).toString(), 2)}:${startMinutes}`;
     item.est = `${padZero((startHour + 3).toString(), 2)}:${startMinutes}`;
@@ -189,8 +187,8 @@ function getVEventData() {
     return getVCalendarData()
         .then(cal => {
             vCalendarData = cal;
-            vFilteredEvents = vCalendarData.events.filter(isFutureEvent);
-            vFilteredEvents.sort(dateSort);
+            //vFilteredEvents = vCalendarData.events.filter(isFutureEvent);
+            //vFilteredEvents.sort(dateSort);
         });
 }
 function isFutureEvent(item) {
@@ -253,15 +251,15 @@ function checkEvents() {
         if (item.eventDate) {
             const eventDate = new Date(item.eventDate);
             diff = differenceInMinutes(eventDate, now);
-            return diff >= 44 && diff < 60;
+            return diff >= 40 && diff < 60;
         }
         return false;
     });
     if (upcoming.length) {
         upcoming.forEach(function (eventItem) {
-            const embed = getVEventAlarm(eventItem);
-            channelTargets.forEach(item => {
-                client.channels.get(item).send(embed);
+            const embed = getVEventAlarm(eventItem.event);
+            channelTargets.forEach(channelId => {
+                client.channels.get(channelId).send(embed);
             });
         });
     }

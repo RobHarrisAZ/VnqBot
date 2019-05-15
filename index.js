@@ -30,7 +30,7 @@ client.on('ready', () => {
     CronJob.schedule('*/15 * * * *', checkEvents, null, true, 'America/Los_Angeles');
     CronJob.schedule('0 3 * * *', function () {
         channelTargets.forEach(item => {
-            client.channels.get(item).send(getDayEvents(Date.now()).concat(getDailyPledges(Date.now())));
+            client.channels.get(item).send(getDayEvents(Date.now()));
         });
     }, null, true, 'America/Los_Angeles');
 });

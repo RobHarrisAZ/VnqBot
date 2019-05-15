@@ -5,7 +5,6 @@ const fetch = require('node-fetch');
 const TurndownService = require('turndown');
 const { addDays, differenceInDays, differenceInMinutes, format, isSameDay } = require('date-fns');
 const bbConvert = require('bbcode-to-markdown');
-const googleCalendarListSort = require('google-calendar-by-date');
 
 const turndownService = new TurndownService();
 const client = new Client();

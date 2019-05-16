@@ -285,7 +285,7 @@ function checkEvents() {
         if (item.eventDate) {
             const eventDate = new Date(item.eventDate);
             diff = differenceInMinutes(eventDate, now);
-            return diff >= 40 && diff < 60;
+            return diff >= 40 && diff < 55;
         }
         return false;
     });

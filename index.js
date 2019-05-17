@@ -51,8 +51,8 @@ client.on('message', msg => {
     }
     if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))){
         const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
-        if (vCalendarData.event_objects.length > index + 1) {
-            msg.channel.send(getVEventAlarm(vCalendarData.event_objects[index]));
+        if (vCalendarData.events.length > index + 1) {
+            msg.channel.send(getVEventAlarm(vCalendarData.events[index].event));
         } else {
             msg.reply(getErrorMessage('Invalid event'));
         }
@@ -126,6 +126,7 @@ function getVEventAlarm(item) {
             <br/>ET: ${format(new Date().setHours(item.est.substr(0, 2), item.est.substr(3, 2)), 'hh:mm a')}
             <br/><br/>${bbConvert(item.description)}`);
     return new RichEmbed()
+        .setURL(item.link)
         .setTitle(item.name)
         .setColor(0x00FFFF)
         .setDescription(description ? description.substr(0, 2048) : '');
@@ -147,7 +148,7 @@ function getDayEvents(day) {
         description = description.concat(info);
     });
 
-    description = description.concat(getPledgeText()).concat(`<b>Pledges:</b><br/>`).concat(getDailyPledges(day));
+    description = description.concat(getPledgeText()).concat(getDailyPledges(day));
     //description = description.concat(getWeekly());
 
     return new RichEmbed()
@@ -166,7 +167,7 @@ function getEvents(day) {
     }).sort(dateSort); 
 }
 function getPledgeText() {
-    return '';
+    return `<b>Todays Pledges:</b><br/>`
 }
 function processTimezones(item) {
     let startDateTime = new Date(item.eventDate);

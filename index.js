@@ -80,14 +80,26 @@ client.on('message', msg => {
     if (msg.content === '!checkevents') {
         checkEvents();
     }
-    if (msg.content.startsWith('!ttp')) {
-        msg.channel.send('Coming soon');
+    if (msg.content.startsWith('!ttp') && msg.content.substr(msg.content.indexOf(' ') + 1).length > 3) {
+        const channelName = msg.content.substr(msg.content.indexOf(' ') + 1);
+        const channelId = getChannelID(channelName, msg.client.channels);
+        if (channelId !== null) {
+            const userList = getUserList(channelId, msg.client);
+            //msg.channel.send(getUserListText(userList));
+            msg.channel.send(getGroupFormationText(shuffle(shuffle(userList)), channelName));
+        } else {
+            msg.channel.send('Channel not found');
+        }
+        //msg.channel.send('Coming soon');
     }
     if (msg.content === '!pledges') {
+        let pledges = getDailyPledges(Date.now());
         msg.channel.send(new RichEmbed()
-        .setTitle(`Today's Pledges`)
-        .setColor(0x20F41F)
-        .setDescription(turndownService.turndown(getDailyPledges(Date.now()))));       
+            .addField(`Today's Pledges:`, pledges[0])
+            .addField(`Tomorrow:`, pledges[1])
+            .setTitle(`Pledges`)
+            .setColor(0x20F41F));
+        //.setDescription(turndownService.turndown(getDailyPledges(Date.now()))));       
     }
 });
 
@@ -133,6 +145,7 @@ function getVEventAlarm(item) {
 }
 function getDayEvents(day) {
     let description = '';
+    let pledges = [];
     if (day === undefined) {
         day = new Date(Date.now());
     }
@@ -148,11 +161,14 @@ function getDayEvents(day) {
         description = description.concat(info);
     });
 
-    description = description.concat(getPledgeText()).concat(getDailyPledges(day));
+    pledges = getDailyPledges(day);
+    //description = description.concat(getPledgeText()).concat(getDailyPledges(day));
     //description = description.concat(getWeekly());
 
     return new RichEmbed()
         .setTitle(`${process.env.GUILD_NAME} Daily Events - ${format(day, 'MM/DD/YYYY')}\nToday's Activities`)
+        .addField(getPledgeText(), pledges[0])
+        .addField(`Tomorrow:`, pledges[1])
         .setColor(0xFF00FF)
         .setDescription(turndownService.turndown(description).substr(0, 2047));
 }
@@ -167,7 +183,7 @@ function getEvents(day) {
     }).sort(dateSort); 
 }
 function getPledgeText() {
-    return `<b>Todays Pledges:</b><br/>`
+    return `Todays Pledges:`
 }
 function processTimezones(item) {
     let startDateTime = new Date(item.eventDate);
@@ -391,12 +407,92 @@ function getDailyPledges(dateTime) {
         
     //let remainingH = 23 - Math.floor((elapsed % 86400) / 3600);
     //let remainingM = 59 - Math.floor(((elapsed % 86400) / 60) % 60);
-    
-    return pledgeText.join('<br/>').concat('<br/><b>Tomorrow:</b><br/>').concat(pledgeNext.join(", "));
+    return [pledgeText.join('\n'), pledgeNext.join(', ')];
+    //return pledgeText.join('\n').concat('\n_Tomorrow:_\n').concat(pledgeNext.join(", "));
     // + " in " + remainingH + " hours and " + remainingM + " minutes.";
 
 }
 function getDungeon(questGiver, dungeonIndex) {
     dungeonIndex = dungeonIndex % 12;
     return esoData.instances[esoData.pledges[questGiver].instances[dungeonIndex]];
+}
+function getUserList(channelId, client) {
+    const channel = getChannel(channelId, client);
+    let users = channel.members.entries();
+    let userList = [];
+    while (true) {
+        let user = users.next();
+        if (user.value) {
+            let id = user.value[0];
+            let member = user.value[1];
+            let userItem = {
+                id: id,
+                name: member.displayName
+            };
+            userList.push(userItem);
+        } else {
+            break;
+        }
+    }
+     
+    return userList;
+}
+function getChannel(channelId, client) {
+    return client.channels.get(channelId)
+}
+function getChannelID(channelName, channels) {
+    const channel = channels.find(val => val.name.toUpperCase() === channelName.toUpperCase());
+    return channel ? channel.id : null;
+}
+function getUserListText(userList) {
+    let description = `Channel Members:<br/>`;
+    let users = ``;
+    userList.forEach(item => {
+        users += `${item.name}<br/>`
+    });
+
+    return new RichEmbed()
+        .setTitle('Channel Members')
+        .setColor(0x750080)
+        .setDescription(turndownService.turndown(`${description}${users}`));
+}
+function getGroupFormationText(userList, channelName) {
+    let fields = [];
+    let description = ``;
+    let groupId = 0;
+    for (let index = 0; index < userList.length; index++) {
+        groupId = ((index % 4) === 0) ? groupId+1 : groupId;
+        userList[index].groupId = groupId;
+    }
+    const groupCount = Math.ceil(userList.length / 4);
+    for (let groupIndex = 1; groupIndex <= groupCount; groupIndex++) {
+        let members = userList.filter(item => item.groupId === groupIndex);
+        let userCount = members.length;
+        let userText = ``;
+        members.forEach(user => userText += `${user.name}, `);
+        userText = userText.substr(0, userText.length - 2);
+        fields.push({ name: `Group ${groupIndex} (${userCount}):`, value: `${ userText }`});
+    }
+    return new RichEmbed({ fields: fields })
+        .setTitle(`Vanquish Group Formation - ${channelName}`)
+        .setColor(0x007780)
+        .setDescription('');
+}
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+  
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
 }

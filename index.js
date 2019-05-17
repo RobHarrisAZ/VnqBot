@@ -179,7 +179,7 @@ function getEvents(day) {
     
     return vCalendarData.events.filter(item => {
         const eventDate = new Date(item.eventDate);
-        return isSameDay(day, eventDate);
+        return isSameDay(day, eventDate) && item.event.name.indexOf(`Ska'vyn`) === -1;
     }).sort(dateSort); 
 }
 function getPledgeText() {

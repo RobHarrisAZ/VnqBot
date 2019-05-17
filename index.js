@@ -255,16 +255,15 @@ function httpGet(uri) {
 }
 function getHelpMessage() {
     return new RichEmbed()
-    .setTitle('Vanquish Bot Commands')
-    .setColor(0x750080)
-        .setDescription(`
-    \n!cal ###: Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.
-    \n!channels: Show channels that events will be broadcast to.
-    \n!channelinfo: View the current channel's ID and name.
-    \n!today: Show today's events.
-    \n!today+#: Show events from # days in the future.
-    \n!refresh: Force a reload of events.
-    \n!help: Display this help info about commands. `);
+        .setTitle('Vanquish Bot Commands')
+        .addField(`!help`, `Display this help info about commands.`)
+        .addField(`!cal ####`, `Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.`)
+        .addField(`!channelinfo`, `View the current channel's ID and name.`)
+        .addField(`!refresh`, `Force a reload of events. This happens automatically daily.`)
+        .addField(`!pledges`, `Show today's pledges.`)
+        .addField(`!today`, `Show today's events.`)
+        .addField(`!today+#`, `Show events from # days in the future.`)
+        .setColor(0x750080);
 }
 function padZero(value, size) {
     while (value.length < (size || 2)) {

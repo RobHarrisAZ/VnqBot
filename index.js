@@ -1,7 +1,7 @@
 require('dotenv').config();
 const CronJob = require('node-cron');
 const { Client, RichEmbed } = require('discord.js');
-const { addDays } = require('date-fns');
+const { addDays, differenceInMinutes } = require('date-fns');
 const utils = require('./modules/utility');
 const channelUtils = require('./modules/channels');
 const pledgeUtils = require('./modules/pledges');
@@ -14,6 +14,8 @@ const client = new Client();
 
 let vCalendarData = null;
 let channelTargets = [process.env.CHANNEL1, process.env.CHANNEL2];
+const checkEvents = events.checkEvents;
+const getDayEvents = events.getDayEvents;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -99,6 +101,26 @@ client.on('message', msg => {
 
 client.login(process.env.BOT_TOKEN);
 
+xcheckEvents = function(channelTargets, eventItems, client) {
+    const now = Date.now();
+    const eventList = events.getEvents(now, eventItems);
+    const upcoming = eventList.filter(item => {
+        if (item.eventDate) {
+            const eventDate = new Date(item.eventDate);
+            diff = differenceInMinutes(eventDate, now);
+            return diff >= 40 && diff < 55;
+        }
+        return false;
+    });
+    if (upcoming.length) {
+        upcoming.forEach(function (eventItem) {
+            let embed = events.getEventAlarm(eventItem);
+            channelTargets.forEach(channelId => {
+                client.channels.get(channelId).send(embed);
+            });
+        });
+    }
+}
 function scheduleJobs(data) {
     // Daily event load @ 12:10am PT
     CronJob.schedule('10 0 * * *', function () {
@@ -107,11 +129,11 @@ function scheduleJobs(data) {
         });
     }, null, true, 'America/Los_Angeles');
     // Check for upcoming events every 15 minutes
-    CronJob.schedule('*/15 * * * *', events.checkEvents(channelTargets, data.events, client), null, true, 'America/Los_Angeles');
+    CronJob.schedule('*/15 * * * *', checkEvents(channelTargets, vCalendarData.events, client), null, true, 'America/Los_Angeles');
     // Daily Today's Activities @ 3am PT
     CronJob.schedule('0 3 * * *', function () {
         channelTargets.forEach(item => {
-            client.channels.get(item).send(events.getDayEvents(Date.now(), guildName));
+            client.channels.get(item).send(getDayEvents(Date.now(), guildName, vCalendarData.events));
         });
     }, null, true, 'America/Los_Angeles');
 }
@@ -140,6 +162,7 @@ function getHelpMessage() {
         This is not case sensitive but does respect the whitespace in a name. The default *groupSize* is 4 if none is provided.`)
         .setColor(0x750080);
 }
+
 // function getUserListText(userList) {
 //     let description = `Channel Members:<br/>`;
 //     let users = ``;

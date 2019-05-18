@@ -12,7 +12,7 @@ exports.getEventData = function(guildUrl) {
         .then(cal => cal);
 }
 
-exports.getEvents = function(day, eventItems) {
+exports.getEvents = (day, eventItems) => {
     if (day === undefined) {
         day = Date.now();
     }
@@ -23,7 +23,7 @@ exports.getEvents = function(day, eventItems) {
     }).sort(utils.dateSort); 
 }
 
-exports.processEvents = function(item, index, arr, data) {
+exports.processEvents = function(item, index, arr, data){
     const eventObj = this.event_objects.find((row) => row.id === item.event_id);
     const category = this.event_categories.find((row) => row.id === eventObj.event_category_id);
 
@@ -36,7 +36,7 @@ exports.processEvents = function(item, index, arr, data) {
     processTimezones(item.eventDate, item.event);
 }
 
-exports.getEventAlarm = function(item) {
+exports.getEventAlarm = (item) => {
     if (!item.eventDate) {
         return utils.getErrorMessage('Invalid Event- not scheduled');
     }
@@ -53,7 +53,7 @@ exports.getEventAlarm = function(item) {
         .setDescription(description ? description.substr(0, 2048) : '');
 }
 
-exports.getDayEvents = function(day, guildName, eventItems) {
+exports.getDayEvents = (day, guildName, eventItems) => {
     let description = '';
     let pledges = [];
     if (day === undefined) {
@@ -81,7 +81,7 @@ exports.getDayEvents = function(day, guildName, eventItems) {
         .setDescription(turndownService.turndown(description).substr(0, 2047));
 }
 
-exports.checkEvents = function(channelTargets, eventItems, client) {
+exports.checkEvents = (channelTargets, eventItems, client) => {
     const now = Date.now();
     const eventList = this.getEvents(now, eventItems);
     const upcoming = eventList.filter(item => {

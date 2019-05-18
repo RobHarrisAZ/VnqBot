@@ -136,6 +136,7 @@ function getHelpMessage() {
         .addField(`!pledges`, `Show today's pledges.`)
         .addField(`!today`, `Show today's events.`)
         .addField(`!today+#`, `Show events from # days in the future.`)
+        .addField(`!ttp <*channel name*> [--*groupSize*]`, `Form up random groups from the list of users in *channel name*. This is not case sensitive but does respect the whitespace in a name. The default *groupSize* is 4 if none is provided.`)
         .setColor(0x750080);
 }
 // function getUserListText(userList) {

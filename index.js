@@ -108,10 +108,12 @@ function scheduleJobs(data) {
     }, null, true, 'America/Los_Angeles');
     // Check for upcoming events every 15 minutes
     CronJob.schedule('*/15 * * * *', function () {
+        console.log('Checking upcoming events');
         events.checkEvents(channelTargets, vCalendarData.events, client);
     }, null, true, 'America/Los_Angeles');
     // Daily Today's Activities @ 3am PT
     CronJob.schedule('0 3 * * *', function () {
+        console.log(`'Posting today's activities`);
         channelTargets.forEach(item => {
             client.channels.get(item).send(events.getDayEvents(Date.now(), guildName, vCalendarData.events));
         });

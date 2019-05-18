@@ -3,6 +3,7 @@ const { differenceInMinutes, format, isSameDay } = require('date-fns');
 const TurndownService = require('turndown');
 const bbConvert = require('bbcode-to-markdown');
 const utils = require('./utility');
+const pledgeUtils = require('./pledges');
 
 const turndownService = new TurndownService();
 
@@ -11,12 +12,12 @@ exports.getEventData = function(guildUrl) {
         .then(cal => cal);
 }
 
-exports.getEvents = function(day, events) {
+exports.getEvents = function(day, eventItems) {
     if (day === undefined) {
         day = Date.now();
     }
     
-    return events.filter(item => {
+    return eventItems.filter(item => {
         const eventDate = new Date(item.eventDate);
         return isSameDay(day, eventDate) && item.event.name.indexOf(`Ska'vyn`) === -1;
     }).sort(utils.dateSort); 
@@ -52,14 +53,14 @@ exports.getEventAlarm = function(item) {
         .setDescription(description ? description.substr(0, 2048) : '');
 }
 
-exports.getDayEvents = function(day, guildName) {
+exports.getDayEvents = function(day, guildName, eventItems) {
     let description = '';
     let pledges = [];
     if (day === undefined) {
         day = new Date(Date.now());
     }
 
-    const todaysEvents = this.getEvents(day);
+    const todaysEvents = this.getEvents(day, eventItems);
 
     todaysEvents.forEach(item => {
         const info = `Event Name/Link: <a href="${item.event.link}">${item.event.name}</a>

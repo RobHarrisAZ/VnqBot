@@ -23,9 +23,11 @@ exports.getDailyPledges = function(dateTime) {
     
     pledgeText = [];
     pledgeNext = [];
-    for (var i = 0; i < data.esoData.pledgeQuestGiver.length;i++){
-        pledgeText.push("* " + this.getDungeon(i, diff_rot) + " (by " + data.esoData.pledgeQuestGiver[i] + ")"); 
-        pledgeNext.push(this.getDungeon(i, diff_rot + 1));
+    for (var i = 0; i < data.esoData.pledgeQuestGiver.length; i++){
+        var pledge = this.getDungeon(i, diff_rot);
+        pledgeText.push("* [" + pledge.name + "](" + pledge.link + ") (by " + data.esoData.pledgeQuestGiver[i] + ")"); 
+        pledge = this.getDungeon(i, diff_rot + 1);
+        pledgeNext.push(`[${pledge.name}](${pledge.link})`);
     }
         
     //let remainingH = 23 - Math.floor((elapsed % 86400) / 3600);

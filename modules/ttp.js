@@ -1,13 +1,13 @@
 const { RichEmbed } = require('discord.js');
 
-exports.getGroupFormationText = function(userList, channelName) {
+exports.getGroupFormationText = function(userList, channelName, groupSize) {
     let fields = [];
     let groupId = 0;
     for (let index = 0; index < userList.length; index++) {
-        groupId = ((index % 4) === 0) ? groupId+1 : groupId;
+        groupId = ((index % groupSize) === 0) ? groupId+1 : groupId;
         userList[index].groupId = groupId;
     }
-    const groupCount = Math.ceil(userList.length / 4);
+    const groupCount = Math.ceil(userList.length / groupSize);
     for (let groupIndex = 1; groupIndex <= groupCount; groupIndex++) {
         let members = userList.filter(item => item.groupId === groupIndex);
         let userCount = members.length;

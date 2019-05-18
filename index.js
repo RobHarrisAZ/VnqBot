@@ -67,15 +67,30 @@ client.on('message', msg => {
                 const numberOfDays = parseInt(msg.content.substr(msg.content.indexOf('+') + 1));
                 msg.channel.send(events.getDayEvents(addDays(Date.now(), numberOfDays), guildName));
             }
-            if (msg.content.startsWith('!ttp') && msg.content.substr(msg.content.indexOf(' ') + 1).length > 3) {
-                const channelName = msg.content.substr(msg.content.indexOf(' ') + 1);
-                const channelId = channelUtils.getChannelID(channelName, msg.client.channels);
-                if (channelId !== null) {
-                    const userList = channelUtils.getUserList(channelId, msg.client);
-                    //msg.channel.send(getUserListText(userList));
-                    msg.channel.send(ttp.getGroupFormationText(utils.shuffle(utils.shuffle(userList)), channelName));
+            if (msg.content.startsWith('!ttp')) {
+                if (msg.content.substr(msg.content.indexOf(' ') + 1).length > 3) {
+                    let groupSizeIndex = msg.content.indexOf('--');
+                    let groupSize = 4;
+                    let groupSizeText = null;
+                    if (msg.content.indexOf('--') > 0) {
+                        groupSizeText = msg.content.substr(groupSizeIndex + 2);
+                        if (isNaN(groupSizeText)) {
+                            msg.channel.send(utils.getErrorMessage(`Invalid group size`));
+                            return;
+                        }
+                        groupSize = Number(groupSizeText);
+                    } 
+                    const channelName = groupSizeText ? msg.content.substring(msg.content.indexOf(' ') + 1, groupSizeIndex).trimRight() : msg.content.substr(msg.content.indexOf(' ') + 1);
+                    const channelId = channelUtils.getChannelID(channelName, msg.client.channels);
+                    if (channelId !== null) {
+                        const userList = channelUtils.getUserList(channelId, msg.client);
+                        //msg.channel.send(getUserListText(userList));
+                        msg.channel.send(ttp.getGroupFormationText(utils.shuffle(utils.shuffle(userList)), channelName, groupSize));
+                    } else {
+                        msg.channel.send('Channel not found');
+                    }
                 } else {
-                    msg.channel.send('Channel not found');
+                    msg.channel.send(utils.getErrorMessage(`Must provide a channel name`))
                 }
             }
             break;

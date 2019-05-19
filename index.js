@@ -6,7 +6,8 @@ const utils = require('./modules/utility');
 const channelUtils = require('./modules/channels');
 const pledgeUtils = require('./modules/pledges');
 const ttp = require('./modules/ttp');
-const events = require('./modules/events');
+const eventUtils = require('./modules/events');
+const events = new eventUtils();
 
 const guildSite = process.env.GUILD_SITE;
 const guildName = process.env.GUILD_NAME;
@@ -109,7 +110,14 @@ function scheduleJobs(data) {
     // Check for upcoming events every 15 minutes
     CronJob.schedule('*/15 * * * *', function () {
         console.log('Checking upcoming events');
-        events.checkEvents(channelTargets, vCalendarData.events, client);
+        const upcoming = events.checkEvents(channelTargets, vCalendarData.events, client);
+        upcoming.forEach(function (eventItem) {
+            const embed = events.getEventAlarm(eventItem);
+            channelTargets.forEach(channelId => {
+                client.channels.get(channelId).send(embed);
+            });
+        });
+
     }, null, true, 'America/Los_Angeles');
     // Daily Today's Activities @ 3am PT
     CronJob.schedule('0 3 * * *', function () {

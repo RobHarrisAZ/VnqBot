@@ -60,6 +60,6 @@ exports.esoData = {
         instances: ['coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2', 'coh1', 'vol', 'bc', 'dire', 'vom']
     }, {
         pledgeQuestGiver: 2,
-        instances: ['fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm']
+        instances: ['cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv', 'icp', 'rom', 'wgt']
     }]
 };

@@ -64,9 +64,10 @@ client.on('message', msg => {
                     msg.reply(utils.getErrorMessage('Invalid event'));
                 }
             }            
-            if (msg.content.startsWith('!today+') && !isNaN(msg.content.substr(msg.content.indexOf('+') + 1))) {
+            if (msg.content.startsWith('!today+') &&
+                !isNaN(msg.content.substr(msg.content.indexOf('+') + 1))) {
                 const numberOfDays = parseInt(msg.content.substr(msg.content.indexOf('+') + 1));
-                msg.channel.send(events.getDayEvents(addDays(Date.now(), numberOfDays), guildName));
+                msg.channel.send(events.getDayEvents(addDays(Date.now(), numberOfDays), guildName, vCalendarData.events));
             }
             if (msg.content.startsWith('!ttp')) {
                 if (msg.content.substr(msg.content.indexOf(' ') + 1).length > 3) {

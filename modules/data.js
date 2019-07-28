@@ -49,7 +49,9 @@ exports.esoData = {
         "mhk": { name: 'Moon Hunter Keep', link: 'https://www.youtube.com/watch?v=rUi-hQFMy9s' },
         "ms": { name: 'March of Sacrifices', link: 'https://www.youtube.com/watch?v=sxLgJyIUPmk' },
         "dm": { name: 'Depths of Malatar', link: 'https://www.youtube.com/watch?v=HS4-WfimNQI' },
-        "fv": { name: 'Frostvault', link: 'https://www.youtube.com/watch?v=CXSw6r0hAAg' }
+        "fv": { name: 'Frostvault', link: 'https://www.youtube.com/watch?v=CXSw6r0hAAg' },
+        "mf": { name: 'Moongrave Fane', link: '' },
+        "lom": { name: 'Lair of Maarselok', link: ''}
     },
     pledgeQuestGiver: ["Maj al-Ragath", "Glirion the Redbeard", "Urgarlag Chief-Bane"],
     pledges: [{
@@ -60,6 +62,6 @@ exports.esoData = {
         instances: ['coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2', 'coh1', 'vol', 'bc', 'dire', 'vom']
     }, {
         pledgeQuestGiver: 2,
-        instances: ['fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm']
-    }]
+        instances: ['fh', 'dm', 'fv', 'fl', 'sp', 'mhk', 'ms', 'mf', 'lom', 'icp', 'rom', 'wgt', 'cos', 'bf']
+    }]//'fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm'
 };

@@ -6,38 +6,40 @@ exports.getPledgeText = function () {
 }
 
 exports.getDailyPledges = function(dateTime) {
-    // this time calculation has been taken from Seri's code
     // const resetTime = '11:00pm';
     // const resetZone = 'America/Los_Angeles';
-    //let elapsed = time - baseTimestamp;
-    //Math.floor(elapsed / 86400);
+    // let elapsed = time - baseTimestamp;
+    // Math.floor(elapsed / 86400);
+    const hour = dateTime.getHours();
 
-    // This is hard coded order. Right now there are 12 dungeons on each quest giver. That makes the calculation easy.
-    // That will change with each patch and the calculation for DLC will be different.
     const baseDate = new Date('05/07/2019');
     if (!dateTime) {
         dateTime = Date.now();
     }
 
     let diff_rot = differenceInDays(dateTime, baseDate);
-    
+    // If the time is >= 23:00, show the next days pledges.
+    if (hour > 22) {
+        diff_rot = diff_rot + 1;
+    }
+
     pledgeText = [];
     pledgeNext = [];
     for (var i = 0; i < data.esoData.pledgeQuestGiver.length; i++){
-        var pledge = this.getDungeon(i, diff_rot);
+        var pledge = i === 2 ? this.getDungeon(i, diff_rot, 14) : this.getDungeon(i, diff_rot, 12);
         pledgeText.push("* [" + pledge.name + "](" + pledge.link + ") (by " + data.esoData.pledgeQuestGiver[i] + ")"); 
-        pledge = this.getDungeon(i, diff_rot + 1);
+        pledge = i == 2 ? this.getDungeon(i, diff_rot + 1, 14) : this.getDungeon(i, diff_rot + 1, 12);
         pledgeNext.push(`[${pledge.name}](${pledge.link})`);
     }
         
-    //let remainingH = 23 - Math.floor((elapsed % 86400) / 3600);
-    //let remainingM = 59 - Math.floor(((elapsed % 86400) / 60) % 60);
     return [pledgeText.join('\n'), pledgeNext.join(', ')];
-    //return pledgeText.join('\n').concat('\n_Tomorrow:_\n').concat(pledgeNext.join(", "));
-    // + " in " + remainingH + " hours and " + remainingM + " minutes.";
 }
 
-exports.getDungeon = function (questGiver, dungeonIndex) {
-    dungeonIndex = dungeonIndex % 12;
+exports.getDungeon = function (questGiver, dungeonIndex, dungeonMultiplier) {
+    dungeonIndex = dungeonIndex % dungeonMultiplier;
     return data.esoData.instances[data.esoData.pledges[questGiver].instances[dungeonIndex]];
 }
+// exports.getDlcDungeon = function (questGiver, dungeonIndex) {
+//     dungeonIndex = dungeonIndex % 14;
+//     return data.esoData.instances[data.esoData.pledges[questGiver].instances[dungeonIndex]];
+// }

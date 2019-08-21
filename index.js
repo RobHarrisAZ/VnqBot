@@ -120,8 +120,8 @@ function scheduleJobs(data) {
         });
 
     }, null, true, 'America/Los_Angeles');
-    // Daily Today's Activities @ 3am PT
-    CronJob.schedule('0 3 * * *', function () {
+    // Daily Today's Activities @ 5am PT
+    CronJob.schedule('0 5 * * *', function () {
         console.log(`'Posting today's activities`);
         channelTargets.forEach(item => {
             client.channels.get(item).send(events.getDayEvents(Date.now(), guildName, vCalendarData.events));

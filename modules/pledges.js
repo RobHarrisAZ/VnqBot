@@ -10,7 +10,7 @@ exports.getDailyPledges = function(dateTime) {
     // const resetZone = 'America/Los_Angeles';
     // let elapsed = time - baseTimestamp;
     // Math.floor(elapsed / 86400);
-    const hour = dateTime.getHours();
+    const hour = new Date(dateTime).getHours();
 
     const baseDate = new Date('05/07/2019');
     if (!dateTime) {

@@ -75,7 +75,7 @@ module.exports = function () {
         pledges = pledgeUtils.getDailyPledges(day);
 
         return new RichEmbed()
-            .setTitle(`${guildName} Daily Events - ${format(day, 'MM/DD/YYYY')}\nToday's Activities`)
+            .setTitle(`${guildName} Daily Events - ${format(day, 'MM/dd/yyyy')}\nToday's Activities`)
             .addField(pledgeUtils.getPledgeText(), pledges[0])
             .addField(`Tomorrow:`, pledges[1])
             .setColor(0xFF00FF)

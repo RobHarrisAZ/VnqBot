@@ -42,7 +42,7 @@ module.exports = function () {
             return utils.getErrorMessage('Invalid Event- not scheduled');
         }
         const description = turndownService.turndown(
-            `Start: ${format(new Date(item.eventDate), 'MM/DD/YYYY')}
+            `Start: ${format(new Date(item.eventDate), 'MM/dd/yyyy')}
             <br/>PT: ${format(new Date().setHours(item.event.pst.substr(0, 2), item.event.pst.substr(3, 2)), 'hh:mm a')}
             <br/>CT: ${format(new Date().setHours(item.event.cst.substr(0, 2), item.event.cst.substr(3, 2)), 'hh:mm a')}
             <br/>ET: ${format(new Date().setHours(item.event.est.substr(0, 2), item.event.est.substr(3, 2)), 'hh:mm a')}

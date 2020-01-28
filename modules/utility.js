@@ -1,5 +1,5 @@
 const { RichEmbed } = require('discord.js');
-const { differenceInDays, differenceInMinutes } = require('date-fns');
+const { differenceInDays, differenceInMinutes, isAfter } = require('date-fns');
 const fetch = require('node-fetch');
 
 exports.shuffle = function (array) {
@@ -35,6 +35,11 @@ exports.httpGet = function(uri) {
         .catch(err => {
             console.log(err);
         });
+}
+
+
+exports.isFutureDate = function(item) {
+    return isAfter(new Date(item.date), Date.now());
 }
 
 exports.dateSort = function(item1, item2) {

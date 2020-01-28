@@ -1,7 +1,7 @@
 require('dotenv').config();
 const CronJob = require('node-cron');
 const { Client, RichEmbed } = require('discord.js');
-const { addDays, differenceInMinutes } = require('date-fns');
+const { addDays, isAfter } = require('date-fns');
 const utils = require('./modules/utility');
 const channelUtils = require('./modules/channels');
 const pledgeUtils = require('./modules/pledges');
@@ -55,6 +55,12 @@ client.on('message', msg => {
                 .setTitle(`Pledges`)
                 .setColor(0x20F41F));
             break;
+        case '!rnd d':
+            // Random Dungeon selector
+        case '!rnd t':
+            // Random Trial selector
+        case '!rnd b':
+            // Random Trial Boss selector
         default:
             if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
                 const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
@@ -134,6 +140,7 @@ function loadEvents() {
             vCalendarData = data;
             vCalendarData.guildName = guildName;
             vCalendarData.guildSite = guildSite;
+            vCalendarData.events = vCalendarData.events.filter(utils.isFutureDate);
             vCalendarData.events.forEach(events.processEvents, vCalendarData);
             vCalendarData.events.sort(utils.dateSort);
             return vCalendarData;

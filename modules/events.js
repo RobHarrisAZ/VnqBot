@@ -1,6 +1,6 @@
 module.exports = function () {
     const { RichEmbed } = require('discord.js');
-    const { differenceInMinutes, format, isSameDay } = require('date-fns');
+    const { differenceInMinutes, format, isSameDay, isAfter } = require('date-fns');
     const TurndownService = require('turndown');
     const bbConvert = require('bbcode-to-markdown');
     const utils = require('./utility');

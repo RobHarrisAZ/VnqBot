@@ -33,7 +33,7 @@ module.exports = function () {
         item.event.eventDate = item.eventDate;
         item.event.category = category ? category.name : 'None';
 
-        item.event.link = `${this.guildSite}/events/${item.event_id}?event_instance_id=${item.id}`;
+        item.link = `${this.guildSite}/events/${item.event_id}?event_instance_id=${item.id}`;
         processTimezones(item.eventDate, item.event);
     }
 
@@ -48,7 +48,7 @@ module.exports = function () {
             <br/>ET: ${format(new Date().setHours(item.event.est.substr(0, 2), item.event.est.substr(3, 2)), 'hh:mm a')}
             <br/><br/>${bbConvert(item.event.description)}`);
         return new RichEmbed()
-            .setURL(item.event.link)
+            .setURL(item.link)
             .setTitle(item.event.name)
             .setColor(0x00FFFF)
             .setDescription(description ? description.substr(0, 2048) : '');
@@ -64,7 +64,7 @@ module.exports = function () {
         const todaysEvents = this.getEvents(day, eventItems);
 
         todaysEvents.forEach(item => {
-            const info = `Event Name/Link: <a href="${item.event.link}">${item.event.name}</a>
+            const info = `Event Name/Link: <a href="${item.link}">${item.event.name}</a>
         <br/>PT: ${format(new Date().setHours(item.event.pst.substr(0, 2), item.event.pst.substr(3, 2)), 'hh:mm a')}
         <br/>CT: ${format(new Date().setHours(item.event.cst.substr(0, 2), item.event.cst.substr(3, 2)), 'hh:mm a')}
         <br/>ET: ${format(new Date().setHours(item.event.est.substr(0, 2), item.event.est.substr(3, 2)), 'hh:mm a')}

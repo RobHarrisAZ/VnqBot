@@ -8,6 +8,7 @@ exports.esoData = {
         "as": "Asylum Sanctorium",
         "cr": "Cloudrest",
         "ss": "Sunspire",        
+        "ka": "Kyne's Aegis",
         "dsa": "Dragonstar Arena",
         "msa": "Maelstrom Arena",
         "weekly": "Weekly Trial",
@@ -52,7 +53,9 @@ exports.esoData = {
         "dm": { name: 'Depths of Malatar', link: 'https://youtu.be/HS4-WfimNQI?list=PL8AZn0Ie30d4d35rT1YhmcHuyfhLHsii7&t=36' },
         "fv": { name: 'Frostvault', link: 'https://youtu.be/CXSw6r0hAAg?list=PL8AZn0Ie30d4d35rT1YhmcHuyfhLHsii7&t=37' },
         "mf": { name: 'Moongrave Fane', link: 'https://www.youtube.com/watch?v=HSQCX7WF_GI' },
-        "lom": { name: 'Lair of Maarselok', link: 'https://www.youtube.com/watch?v=4Yy2kCWKb8o'}
+        "lom": { name: 'Lair of Maarselok', link: 'https://www.youtube.com/watch?v=4Yy2kCWKb8o'},
+        "ug": { name: 'Unhallowed Grave', link: 'https://www.youtube.com/watch?v=D6xHDg7CcSs'},
+        "ir": { name: 'Icereach', link: 'https://www.youtube.com/watch?v=KVZp83mLQ-4'}
     },
     pledgeQuestGiver: ["Maj al-Ragath", "Glirion the Redbeard", "Urgarlag Chief-Bane"],
     pledges: [{
@@ -63,9 +66,9 @@ exports.esoData = {
         instances: ['coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2', 'coh1', 'vol', 'bc', 'dire', 'vom']
     }, {
         pledgeQuestGiver: 2,
-        instances: ['fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv', 'mf', 'lom', 'icp', 'rom', 'wgt', 'cos', 'bf']
+        instances: ['lom', 'icp', 'rom', 'wgt', 'cos', 'bf', 'ug', 'ir','fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv', 'mf', ]
     }], //'fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm'
-    trials: ['aa', 'hrc', 'so', 'mol', 'hof', 'as', 'cr', 'ss' ],
+    trials: ['aa', 'hrc', 'so', 'mol', 'hof', 'as', 'cr', 'ss', 'ka' ],
     firstBosses: [
         { name: 'Lightning Storm Atronach', trial: 'aa' },
         { name: 'Ra Kotu', trial: 'hrc' },

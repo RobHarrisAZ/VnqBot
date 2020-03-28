@@ -1,3 +1,6 @@
+const { differenceInWeeks } = require('date-fns');
+const data = require('./data');
+
 module.exports = function () {
     const { RichEmbed } = require('discord.js');
     const { differenceInMinutes, format, isSameDay, isAfter } = require('date-fns');
@@ -106,5 +109,23 @@ module.exports = function () {
         //item.mst = `${startHour}:${startMinutes}`;
         item.cst = `${utils.padZero((startHour + 2).toString(), 2)}:${startMinutes}`;
         item.est = `${utils.padZero((startHour + 3).toString(), 2)}:${startMinutes}`;
+    }
+
+    this.getSmsZones = () => {
+        const baseDate = new Date('02/29/2020');
+        const now = Date.now();
+        const hour = new Date(now).getHours();
+
+        let diff_rot = differenceInWeeks(now, baseDate);
+        // If the time is >= 23:00, show the next days pledges.
+        if (hour > 10) {
+            diff_rot = diff_rot + 1;
+        }
+        return getZones(diff_rot, 6);
+    }
+
+    getZones = function (zoneIndex, zoneMultiplier) {
+        zoneIndex = zoneIndex % zoneMultiplier;
+        return data.esoData.smsZones[zoneIndex].zones.map(zone => data.esoData.zones[zone].name);
     }
 }

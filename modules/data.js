@@ -82,5 +82,32 @@ exports.esoData = {
         { name: 'Shade of Siroria', trial: 'cr' },
         { name: 'Yolnahkrin', trial: 'ss' },        
         { name: 'Lokkestiiz', trial: 'ss' }
+    ],
+    zones: [
+        { id: 0, name: `Auridon` },
+        { id: 1, name: `Glenumbra` },
+        { id: 2, name: `Rivenspire` },
+        { id: 3, name: `Stormhaven` },
+        { id: 4, name: `Bangkorai` },
+        { id: 5, name: `Alik'r` },
+        { id: 6, name: `Malabal Tor` },
+        { id: 7, name: `Greenshade` },
+        { id: 8, name: `Graahtwood` },
+        { id: 9, name: `Reaper's Marchm` },
+        { id: 10, name: `Shadowfen` },
+        { id: 11, name: `Deshaan` },
+        { id: 12, name: `Stonefalls` },
+        { id: 13, name: `Eastmarch` },
+        { id: 14, name: `The Rift` },
+        { id: 15, name: `Craglorn` },
+        { id: 16, name: `Coldharbour` }
+    ],
+    smsZones: [
+        { id: 0, zones: [0, 1, 2] },
+        { id: 1, zones: [3, 4, 5] },
+        { id: 2, zones: [6, 7, 8] },
+        { id: 3, zones: [9, 10, 11] },
+        { id: 4, zones: [12, 13, 14] },
+        { id: 5, zones: [15, 16] }
     ]
 };

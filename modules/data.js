@@ -102,6 +102,18 @@ exports.esoData = {
         { id: 15, name: `Craglorn` },
         { id: 16, name: `Coldharbour` }
     ],
+    mnmActivities: [
+        { id: 0, name: `Hew's Bane, Gold Coast & Clockwork City`},
+        { id: 1, name: `Murkmire`},
+        { id: 2, name: `Southern Elsweyr`},
+        { id: 3, name: `Imperial Sewers`},
+        { id: 4, name: `Imperial City`},
+        { id: 5, name: `Wrothgar`},
+        { id: 6, name: `Vvardenfell`},
+        { id: 7, name: `Summerset`},
+        { id: 8, name: `Northern Elsweyr`},
+        { id: 9, name: `Western Skyrim`}
+    ],
     smsZones: [
         { id: 0, zones: [0, 1, 2] },
         { id: 1, zones: [3, 4, 5] },

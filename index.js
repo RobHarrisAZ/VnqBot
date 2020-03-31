@@ -76,6 +76,13 @@ client.on('message', msg => {
                 .setDescription(zoneText)
                 .setColor(0x00FFFF));
             break;
+        case '!mnm':
+                const activityText = events.getMnmActivities();
+                msg.channel.send(new RichEmbed()
+                    .setTitle(`Monday Night Madness Zones for this week:`)
+                    .setDescription(activityText)
+                    .setColor(0x00FFFF));
+                break;
         default:
             if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
                 const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));

@@ -128,4 +128,18 @@ module.exports = function () {
         zoneIndex = zoneIndex % zoneMultiplier;
         return data.esoData.smsZones[zoneIndex].zones.map(zone => data.esoData.zones[zone].name);
     }
+
+    this.getMnmActivities = () => {
+        const baseDate = new Date('01/27/2020');
+        const now = Date.now();
+        const hour = new Date(now).getHours();
+
+        let diff_rot = differenceInWeeks(now, baseDate);
+        // If the time is >= 23:00, show the next days pledges.
+        if (hour > 8) {
+            diff_rot = diff_rot + 1;
+        }
+        const activityIndex = diff_rot % 10;
+        return data.esoData.mnmActivities[activityIndex].name;
+    }
 }

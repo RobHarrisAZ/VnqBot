@@ -1,4 +1,4 @@
-const { differenceInWeeks } = require('date-fns');
+const { differenceInWeeks, getDay } = require('date-fns');
 const data = require('./data');
 
 module.exports = function () {
@@ -112,13 +112,14 @@ module.exports = function () {
     }
 
     this.getSmsZones = () => {
-        const baseDate = new Date('02/29/2020');
+        const baseDate = new Date('01/12/2020');
         const now = Date.now();
         const hour = new Date(now).getHours();
+        const day = getDay(now);
 
         let diff_rot = differenceInWeeks(now, baseDate);
         // If the time is >= 23:00, show the next days pledges.
-        if (hour > 10) {
+        if (day === 6 && hour > 10) {
             diff_rot = diff_rot + 1;
         }
         return getZones(diff_rot, 6);
@@ -133,10 +134,11 @@ module.exports = function () {
         const baseDate = new Date('01/27/2020');
         const now = Date.now();
         const hour = new Date(now).getHours();
+        const day = getDay(now);
 
         let diff_rot = differenceInWeeks(now, baseDate);
         // If the time is >= 23:00, show the next days pledges.
-        if (hour > 8) {
+        if (day === 1 && hour > 8) {
             diff_rot = diff_rot + 1;
         }
         const activityIndex = diff_rot % 10;

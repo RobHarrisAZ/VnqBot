@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 exports.getGroupFormationText = function(userList, channelName, groupSize) {
     let fields = [];
@@ -16,7 +16,7 @@ exports.getGroupFormationText = function(userList, channelName, groupSize) {
         userText = userText.substr(0, userText.length - 2);
         fields.push({ name: `Group ${groupIndex} (${userCount}):`, value: `${ userText }`});
     }
-    return new RichEmbed({ fields: fields })
+    return new MessageEmbed({ fields: fields })
         .setTitle(`Vanquish Group Formation - ${channelName}`)
         .setColor(0x007780);
 }

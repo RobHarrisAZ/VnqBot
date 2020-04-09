@@ -1,6 +1,6 @@
 require('dotenv').config();
 const CronJob = require('node-cron');
-const { Client, RichEmbed } = require('discord.js');
+const { Client, MessageEmbed } = require('discord.js');
 const { addDays, isAfter } = require('date-fns');
 const utils = require('./modules/utility');
 const channelUtils = require('./modules/channels');
@@ -31,7 +31,7 @@ client.on('message', msg => {
             break;
         case '!refresh':
             loadEvents().then(() => {
-                const embed2 = new RichEmbed()
+                const embed2 = new MessageEmbed()
                     .setTitle('Events Retrieved!')
                     .setColor(0x00FFFF)
                     .setDescription(`Count: ${vCalendarData.events.length}`);
@@ -49,7 +49,7 @@ client.on('message', msg => {
             break;
         case '!pledges':
             let pledges = pledgeUtils.getDailyPledges(Date.now());
-            msg.channel.send(new RichEmbed()
+            msg.channel.send(new MessageEmbed()
                 .addField(`Today's Pledges:`, pledges[0])
                 .addField(`Tomorrow:`, pledges[1])
                 .setTitle(`Pledges`)
@@ -62,7 +62,7 @@ client.on('message', msg => {
         case '!rnd b':
             // Random Trial Boss selector
         case '!birthday':
-            msg.channel.send(new RichEmbed()
+            msg.channel.send(new MessageEmbed()
                 .setTitle(`Happy Birthday Vanquish!`)
                 .setDescription(`OUR EVENTS FOR THE DAY:\n\n11:00am – 1:00pm EST: SMS (Saturday Morning Smackdown) Join with Infi as he takes us through overland in three different zones to take down World Bosses.\n\n1:30pm – 3:00pm EST: MNM (Monday Night Madness) With Cy taking over the lead, join us as we do another run of World Bosses through DLC’s for the daily coffers.\n\n3:30pm – 4:30pm EST: Lawn Darts. It’s an old Vanquish Tradition as we plummet to our deaths to land on the corpse of our fearless leader, Savina. Prizes are yet to be determined.\n\n5:00pm – 6:30pm EST: Vanquish Dome! You’ve heard of Mad Max. Now be him as we meet in Stormhaven to fight one on one gladiator style. Wearing only a Barbaric Helm (supplied) and a weapon (random), face your opponent using your weapon or skills that can fit on 1 bar. It’s fun. It’s glorious. It’s Vanquish Dome! Prizes are yet to be determined.\n\n7:00pm EST: VANQUISH ROLL CALL. Gather up at the Vanquish Bridge, Daggerfall bridge, near the Impresario, and wear your Guild Tabards. Show your Vanquish colors as Savina leads us forward. Guild meeting will be done in Guild Chat to prevent potential ‘spamming’. Please NO Pets of any kind.\n\n7:45pm – 8:30pm EST: Vanquish Murder Mystery. Another old favorite from the past. Join us as Duck leads us on an adventure to search for clues on where the assassin is hiding. Finish him/her off and avenge the attempted assassination of ONE of our Vanquish Members. Prizes are yet to be determined.\n\n9:00pm – 11:00pm EST: FNF (Friday Night Fights) It’s Friday on Saturday! Head to Cyrodiil, standard 30 day, as DanTheMan has a repeat performance of FNF. Fly your Lion Banners, wear your guild tabards, as we knock EP and AD back to their gates.\n\n11:30pm – 1:00am EST: Saturday Night Trials. Get geared! A couple weeks ago we had two full groups hitting 3 trials each. Refill those drinks and join Infi and Kildaan as we lead multiple groups through several normal trials for everyone!`)
                 .setColor(0x20F41F));
@@ -71,14 +71,14 @@ client.on('message', msg => {
             const smsZones = events.getSmsZones();
             let zoneText = '';
             smsZones.forEach(zone => zoneText += '\n' + zone);
-            msg.channel.send(new RichEmbed()
+            msg.channel.send(new MessageEmbed()
                 .setTitle(`Saturday Morning Smackdown Zones for this week:`)
                 .setDescription(zoneText)
                 .setColor(0x00FFFF));
             break;
         case '!mnm':
                 const activityText = events.getMnmActivities();
-                msg.channel.send(new RichEmbed()
+                msg.channel.send(new MessageEmbed()
                     .setTitle(`Monday Night Madness Zones for this week:`)
                     .setDescription(activityText)
                     .setColor(0x00FFFF));
@@ -169,7 +169,7 @@ function loadEvents() {
         });
 }
 function getHelpMessage() {
-    return new RichEmbed()
+    return new MessageEmbed()
         .setTitle('Vanquish Bot Commands')
         .addField(`!vnqhelp`, `Display this help info about commands.`)
         .addField(`!cal ####`, `Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.`)
@@ -192,7 +192,7 @@ function getHelpMessage() {
 //         users += `${item.name}<br/>`
 //     });
 
-//     return new RichEmbed()
+//     return new MessageEmbed()
 //         .setTitle('Channel Members')
 //         .setColor(0x750080)
 //         .setDescription(turndownService.turndown(`${description}${users}`));
@@ -226,7 +226,7 @@ function getHelpMessage() {
 //     channelTargets.forEach(item => {
 //         channelList = channelList.concat(`ID:${item.id}, Name: ${item.name} <br/>`);
 //     });
-//     return new RichEmbed()
+//     return new MessageEmbed()
 //         .setTitle('Channel List')
 //         .setColor(0xFF00FF)
 //         .setDescription(turndownService.turndown(channelList));

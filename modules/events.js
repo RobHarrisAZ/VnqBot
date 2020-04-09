@@ -2,8 +2,8 @@ const { differenceInWeeks, getDay } = require('date-fns');
 const data = require('./data');
 
 module.exports = function () {
-    const { RichEmbed } = require('discord.js');
-    const { differenceInMinutes, format, isSameDay, isAfter } = require('date-fns');
+    const { MessageEmbed } = require('discord.js');
+    const { differenceInMinutes, format, isSameDay } = require('date-fns');
     const TurndownService = require('turndown');
     const bbConvert = require('bbcode-to-markdown');
     const utils = require('./utility');
@@ -50,7 +50,7 @@ module.exports = function () {
             <br/>CT: ${format(new Date().setHours(item.event.cst.substr(0, 2), item.event.cst.substr(3, 2)), 'hh:mm a')}
             <br/>ET: ${format(new Date().setHours(item.event.est.substr(0, 2), item.event.est.substr(3, 2)), 'hh:mm a')}
             <br/><br/>${bbConvert(item.event.description)}`);
-        return new RichEmbed()
+        return new MessageEmbed()
             .setURL(item.link)
             .setTitle(item.event.name)
             .setColor(0x00FFFF)
@@ -77,7 +77,7 @@ module.exports = function () {
 
         pledges = pledgeUtils.getDailyPledges(day);
 
-        return new RichEmbed()
+        return new MessageEmbed()
             .setTitle(`${guildName} Daily Events - ${format(day, 'MM/dd/yyyy')}\nToday's Activities`)
             .addField(pledgeUtils.getPledgeText(), pledges[0])
             .addField(`Tomorrow:`, pledges[1])

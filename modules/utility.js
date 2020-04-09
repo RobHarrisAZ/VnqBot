@@ -1,5 +1,5 @@
-const { RichEmbed } = require('discord.js');
-const { differenceInDays, differenceInMinutes, isAfter } = require('date-fns');
+const { MessageEmbed } = require('discord.js');
+const { differenceInMinutes, isAfter } = require('date-fns');
 const fetch = require('node-fetch');
 
 exports.shuffle = function (array) {
@@ -68,7 +68,7 @@ exports.dateSort = function(item1, item2) {
 }
 
 exports.getErrorMessage = function (message) {
-    return new RichEmbed()
+    return new MessageEmbed()
         .setTitle(message)
         .setColor(0xFF0000);
 }

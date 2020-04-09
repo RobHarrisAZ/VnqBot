@@ -131,16 +131,16 @@ module.exports = function () {
     }
 
     this.getMnmActivities = () => {
-        const baseDate = new Date('01/27/2020');
+        const baseDate = new Date('01/20/2020 20:00');
         const now = Date.now();
         const hour = new Date(now).getHours();
         const day = getDay(now);
 
         let diff_rot = differenceInWeeks(now, baseDate);
         // If the time is >= 23:00, show the next days pledges.
-        if (day === 1 && hour > 8) {
-            diff_rot = diff_rot + 1;
-        }
+        // if (day === 1 && hour > 8) {
+        //     diff_rot = diff_rot + 1;
+        // }
         const activityIndex = diff_rot % 10;
         return data.esoData.mnmActivities[activityIndex].name;
     }

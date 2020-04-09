@@ -12,16 +12,16 @@ exports.getDailyPledges = function(dateTime) {
     // Math.floor(elapsed / 86400);
     const hour = new Date(dateTime).getHours();
 
-    const baseDate = new Date('05/07/2019');
+    const baseDate = new Date('05/07/2019 23:00');
     if (!dateTime) {
         dateTime = Date.now();
     }
 
     let diff_rot = differenceInDays(dateTime, baseDate);
     // If the time is >= 23:00, show the next days pledges.
-    if (hour > 22) {
-        diff_rot = diff_rot + 1;
-    }
+    // if (hour > 22) {
+    //     diff_rot = diff_rot + 1;
+    // }
 
     pledgeText = [];
     pledgeNext = [];

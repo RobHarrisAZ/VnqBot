@@ -1,9 +1,9 @@
 exports.getChannel = function(channelId, client) {
-    return client.channels.get(channelId)
+    return client.channels.cache.get(channelId)
 }
 
 exports.getChannelID = function(channelName, channels) {
-    const channel = channels.find(val => val.name.toUpperCase() === channelName.toUpperCase());
+    const channel = channels.cache.find(val => val.name.toUpperCase() === channelName.toUpperCase());
     return channel ? channel.id : null;
 }
 

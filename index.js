@@ -152,7 +152,7 @@ function scheduleJobs(data) {
     // Daily Today's Activities @ 5am PT
     CronJob.schedule('0 5 * * *', function () {
         console.log(`'Posting today's activities`);
-        channelTargets.forEach(item => {
+        channelTargets.forEach(channelId => {
             let channel = client.channels.cache.get(channelId);
             channel.send(events.getDayEvents(Date.now(), guildName, vCalendarData.events));
         });

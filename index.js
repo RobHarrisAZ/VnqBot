@@ -143,7 +143,8 @@ function scheduleJobs(data) {
         upcoming.forEach(function (eventItem) {
             const embed = events.getEventAlarm(eventItem);
             channelTargets.forEach(channelId => {
-                client.channels.get(channelId).send(embed);
+                let channel = client.channels.cache.get(channelId);
+                channel.send(embed);
             });
         });
 
@@ -152,7 +153,8 @@ function scheduleJobs(data) {
     CronJob.schedule('0 5 * * *', function () {
         console.log(`'Posting today's activities`);
         channelTargets.forEach(item => {
-            client.channels.get(item).send(events.getDayEvents(Date.now(), guildName, vCalendarData.events));
+            let channel = client.channels.cache.get(channelId);
+            channel.send(events.getDayEvents(Date.now(), guildName, vCalendarData.events));
         });
     }, null, true, 'America/Los_Angeles');
 }

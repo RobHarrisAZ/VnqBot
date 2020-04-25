@@ -92,7 +92,7 @@ exports.esoData = {
         { id: 5, name: `Alik'r` },
         { id: 6, name: `Malabal Tor` },
         { id: 7, name: `Greenshade` },
-        { id: 8, name: `Graahtwood` },
+        { id: 8, name: `Grahtwood` },
         { id: 9, name: `Reaper's Marchm` },
         { id: 10, name: `Shadowfen` },
         { id: 11, name: `Deshaan` },

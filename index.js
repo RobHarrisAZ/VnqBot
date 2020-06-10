@@ -25,6 +25,8 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
+    let zoneText = '';
+
     switch (msg.content) {
         case '!vnqhelp':
             msg.channel.send(getHelpMessage());
@@ -69,20 +71,43 @@ client.on('message', msg => {
             break;
         case '!sms':
             const smsZones = events.getSmsZones();
-            let zoneText = '';
             smsZones.forEach(zone => zoneText += '\n' + zone);
             msg.channel.send(new MessageEmbed()
                 .setTitle(`Saturday Morning Smackdown Zones for this week:`)
                 .setDescription(zoneText)
                 .setColor(0x00FFFF));
             break;
-        case '!mnm':
-                const activityText = events.getMnmActivities();
-                msg.channel.send(new MessageEmbed()
-                    .setTitle(`Monday Night Madness Zones for this week:`)
-                    .setDescription(activityText)
-                    .setColor(0x00FFFF));
-                break;
+        case '!sms list':
+            zoneText = events.getSmsZones({all: true});
+            //zoneText = '';
+            //smsAllZones.forEach(zone => zoneText += '\n' + zone);
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`Saturday Morning Smackdown Zones Order:`)
+                .setDescription(zoneText)
+                .setColor(0x00FFFF));
+            break;
+            case '!mnm':
+            const activityText = events.getMnmActivities();
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`Monday Night Madness Zones for this week:`)
+                .setDescription(activityText)
+                .setColor(0x00FFFF));
+            break;
+        case '!spd':
+            const spdActivityText = events.getSpdActivities();
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`Next SPD Zone:`)
+                .setDescription(spdActivityText)
+                .setColor(0x00FFFF));
+            break;
+        case '!spd list':
+            const spdAllActivityText = events.getSpdActivities({all: true});
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`SPD Zone Order:`)
+                .setDescription(spdAllActivityText)
+                .setColor(0x00FFFF));
+            break;
+    
         default:
             if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
                 const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
@@ -180,6 +205,9 @@ function getHelpMessage() {
         .addField(`!refresh`, `Force a reload of events. This happens automatically daily.`)
         .addField(`!pledges`, `Show today's pledges.`)
         .addField(`!sms`, `Show this week's SMS Zones.`)
+        .addField(`!sms list`, `Show SMS Zone Order.`)
+        .addField(`!spd`, `Show the upcoming SPD Zone.`)
+        .addField(`!spd list`, `Show the order of SPD Zones.`)
         .addField(`!today`, `Show today's events.`)
         .addField(`!today+#`, `Show events from # days in the future.`)
         .addField(`!ttp <*channel name*> [--*groupSize*]`, `Form up random groups from the list of users in *channel name*. 

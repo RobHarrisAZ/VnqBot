@@ -111,23 +111,32 @@ module.exports = function () {
         item.est = `${utils.padZero((startHour + 3).toString(), 2)}:${startMinutes}`;
     }
 
-    this.getSmsZones = () => {
+    this.getSmsZones = (options) => {
+        const multiplier = data.esoData.smsZones.length;
         const baseDate = new Date('01/12/2020');
         const now = Date.now();
         const hour = new Date(now).getHours();
         const day = getDay(now);
 
-        let diff_rot = differenceInWeeks(now, baseDate);
-        // If the time is >= 23:00, show the next days pledges.
-        if (day === 6 && hour > 10) {
-            diff_rot = diff_rot + 1;
+        if (options && options.all) {
+            let activityText = ``;
+            for (let idx = 0; idx < multiplier; idx++) {
+                activityText += getZones(idx, multiplier, data.esoData.smsZones) + `\n`;
+            }
+            return activityText;
+        } else {
+            let diff_rot = differenceInWeeks(now, baseDate);
+            // If the time is >= 23:00, show the next days pledges.
+            if (day === 6 && hour > 10) {
+                diff_rot = diff_rot + 1;
+            }
+            return getZones(diff_rot, multiplier, data.esoData.smsZones);
         }
-        return getZones(diff_rot, 6);
     }
 
-    getZones = function (zoneIndex, zoneMultiplier) {
+    getZones = function (zoneIndex, zoneMultiplier, source) {
         zoneIndex = zoneIndex % zoneMultiplier;
-        return data.esoData.smsZones[zoneIndex].zones.map(zone => data.esoData.zones[zone].name);
+        return source[zoneIndex].zones.map(zone => data.esoData.zones[zone].name);
     }
 
     this.getMnmActivities = () => {
@@ -137,11 +146,24 @@ module.exports = function () {
         const day = getDay(now);
 
         let diff_rot = differenceInWeeks(now, baseDate);
-        // If the time is >= 23:00, show the next days pledges.
-        // if (day === 1 && hour > 8) {
-        //     diff_rot = diff_rot + 1;
-        // }
         const activityIndex = diff_rot % 10;
         return data.esoData.mnmActivities[activityIndex].name;
+    }
+
+    this.getSpdActivities = (options) => {
+        const multiplier = data.esoData.spdZones.length;
+        const baseDate = new Date('06/02/2020 20:00');
+        const now = Date.now();
+        const hour = new Date(now).getHours();
+        const day = getDay(now);
+        if (options && options.all) {
+            let activityText = ``;
+            for (let idx = 0; idx < multiplier; idx++) {
+                activityText += getZones(idx, multiplier, data.esoData.spdZones) + `\n`;
+            }
+            return activityText;
+        } else {
+            return getZones(differenceInWeeks(now, baseDate), multiplier, data.esoData.spdZones);    
+        }
     }
 }

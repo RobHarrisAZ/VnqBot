@@ -86,7 +86,7 @@ client.on('message', msg => {
                 .setDescription(zoneText)
                 .setColor(0x00FFFF));
             break;
-            case '!mnm':
+        case '!mnm':
             const activityText = events.getMnmActivities();
             msg.channel.send(new MessageEmbed()
                 .setTitle(`Monday Night Madness Zones for this week:`)
@@ -107,7 +107,17 @@ client.on('message', msg => {
                 .setDescription(spdAllActivityText)
                 .setColor(0x00FFFF));
             break;
-    
+        case '!udt':
+            const udtActivityText = `* We meet up in Wayrest near the Undaunted Enclave. 
+            * One person in the group at a time picks up a daily delve quest from Bolgrul and shares it with the group.
+            * The group travels to the delve target and completes the quest and returns to Wayrest to turn in the quest.
+            * Then the next person in the group, at the direction of the leader, picks up the next quest and the cycle repeats until we've exhausted all of the available quests to the group.`;
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`Undaunted Tuesday Information:`)
+                .setDescription(udtActivityText)
+                .setColor(0x00FFFF));
+            break;
+        
         default:
             if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
                 const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
@@ -212,6 +222,7 @@ function getHelpMessage() {
         .addField(`!today+#`, `Show events from # days in the future.`)
         .addField(`!ttp <*channel name*> [--*groupSize*]`, `Form up random groups from the list of users in *channel name*. 
         This is not case sensitive but does respect the whitespace in a name. The default *groupSize* is 4 if none is provided.`)
+        .addField(`!udt`, `Show Undaunted Tuesday Information.`)
         .setColor(0x750080);
 }
 

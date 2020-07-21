@@ -55,7 +55,9 @@ exports.esoData = {
         "mf": { name: 'Moongrave Fane', link: 'https://www.youtube.com/watch?v=HSQCX7WF_GI' },
         "lom": { name: 'Lair of Maarselok', link: 'https://www.youtube.com/watch?v=4Yy2kCWKb8o'},
         "ug": { name: 'Unhallowed Grave', link: 'https://www.youtube.com/watch?v=D6xHDg7CcSs'},
-        "ir": { name: 'Icereach', link: 'https://www.youtube.com/watch?v=KVZp83mLQ-4'}
+        "ir": { name: 'Icereach', link: 'https://www.youtube.com/watch?v=KVZp83mLQ-4'},
+        "sg": { name: 'Stone Garden', link: '#'},
+        "ct": { name: 'Castle Thorn', link: '#'}
     },
     pledgeQuestGiver: ["Maj al-Ragath", "Glirion the Redbeard", "Urgarlag Chief-Bane"],
     pledges: [{

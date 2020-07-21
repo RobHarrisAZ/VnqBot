@@ -1,4 +1,4 @@
-const { differenceInWeeks, getDay } = require('date-fns');
+const { differenceInWeeks, getDay, differenceInDays } = require('date-fns');
 const data = require('./data');
 
 module.exports = function () {
@@ -154,8 +154,8 @@ module.exports = function () {
         const multiplier = data.esoData.spdZones.length;
         const baseDate = new Date('06/02/2020 20:00');
         const now = Date.now();
-        const hour = new Date(now).getHours();
-        const day = getDay(now);
+        // const hour = new Date(now).getHours();
+        // const day = getDay(now);
         if (options && options.all) {
             let activityText = ``;
             for (let idx = 0; idx < multiplier; idx++) {
@@ -163,7 +163,10 @@ module.exports = function () {
             }
             return activityText;
         } else {
-            return getZones(differenceInWeeks(now, baseDate), multiplier, data.esoData.spdZones);    
+            const numberOfDays = differenceInDays(now, baseDate);
+            let periods = Math.round(numberOfDays / 14);
+            periods = (numberOfDays % 14) === 0 ? periods : periods+1;
+            return getZones(periods, multiplier, data.esoData.spdZones);    
         }
     }
 }

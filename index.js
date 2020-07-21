@@ -1,4 +1,6 @@
 require('dotenv').config();
+const pjson = require('./package.json');
+
 const CronJob = require('node-cron');
 const { Client, MessageEmbed } = require('discord.js');
 const { addDays, isAfter } = require('date-fns');
@@ -117,7 +119,13 @@ client.on('message', msg => {
                 .setDescription(udtActivityText)
                 .setColor(0x00FFFF));
             break;
-        
+        case '!version':
+            const version = pjson.version;
+            const versionText = `VNQBot Version ${version}`;
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`VNQBot`)
+                .setDescription(versionText)
+                .setColor(0xFF00FF));
         default:
             if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
                 const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
@@ -223,6 +231,7 @@ function getHelpMessage() {
         .addField(`!ttp <*channel name*> [--*groupSize*]`, `Form up random groups from the list of users in *channel name*. 
         This is not case sensitive but does respect the whitespace in a name. The default *groupSize* is 4 if none is provided.`)
         .addField(`!udt`, `Show Undaunted Tuesday Information.`)
+        .addField(`!version`, `Show Bot version info.`)
         .setColor(0x750080);
 }
 

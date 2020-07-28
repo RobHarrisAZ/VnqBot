@@ -165,7 +165,7 @@ module.exports = function () {
         } else {
             const numberOfDays = differenceInDays(now, baseDate);
             let periods = Math.round(numberOfDays / 14);
-            periods = (numberOfDays % 14) === 0 ? periods : periods+1;
+            periods = (numberOfDays % 14) < 7 ? periods+1 : periods;
             return getZones(periods, multiplier, data.esoData.spdZones);    
         }
     }

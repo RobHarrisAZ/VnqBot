@@ -62,13 +62,13 @@ exports.esoData = {
     pledgeQuestGiver: ["Maj al-Ragath", "Glirion the Redbeard", "Urgarlag Chief-Bane"],
     pledges: [{
         pledgeQuestGiver: 0,
-        instances: ['fg2', 'sc1', 'dc2', 'eh1', 'ws2', 'fg1', 'bc2', 'dc1', 'eh2', 'ws1', 'sc2', 'bc1']
+        instances: ['dc1', 'eh2', 'ws1', 'sc2', 'bc1', 'fg2', 'sc1', 'dc2', 'eh1', 'ws2', 'fg1', 'bc2']
     }, {
         pledgeQuestGiver: 1,
-        instances: ['coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2', 'coh1', 'vol', 'bc', 'dire', 'vom']
+        instances: ['coh1', 'vol', 'bc', 'dire', 'vom', 'coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2']
     }, {
         pledgeQuestGiver: 2,
-        instances: ['sp', 'mhk', 'ms', 'dm', 'fv', 'mf', 'lom', 'ir', 'ug', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', ]
+        instances: ['mf', 'lom', 'ir', 'ug', 'st', 'ct', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv']
     }], //'fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm'
     trials: ['aa', 'hrc', 'so', 'mol', 'hof', 'as', 'cr', 'ss', 'ka' ],
     firstBosses: [

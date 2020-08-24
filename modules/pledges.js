@@ -12,7 +12,7 @@ exports.getDailyPledges = function(dateTime) {
     // Math.floor(elapsed / 86400);
     const hour = new Date(dateTime).getHours();
 
-    const baseDate = new Date('05/06/2019 23:00');
+    const baseDate = new Date('08/23/2020 23:00');
     if (!dateTime) {
         dateTime = Date.now();
     }

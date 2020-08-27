@@ -68,7 +68,7 @@ exports.esoData = {
         instances: ['coh1', 'vol', 'bc', 'dire', 'vom', 'coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2']
     }, {
         pledgeQuestGiver: 2,
-        instances: ['mf', 'lom', 'ir', 'ug', 'st', 'ct', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv']
+        instances: ['mf', 'lom', 'ir', 'ug', 'sg', 'ct', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv']
     }], //'fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm'
     trials: ['aa', 'hrc', 'so', 'mol', 'hof', 'as', 'cr', 'ss', 'ka' ],
     firstBosses: [

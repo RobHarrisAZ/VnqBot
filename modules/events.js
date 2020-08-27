@@ -23,7 +23,7 @@ module.exports = function () {
     
         return eventItems.filter(item => {
             const eventDate = new Date(item.eventDate);
-            return isSameDay(day, eventDate) && item.event.name.indexOf(`Ska'vyn`) === -1;
+            return isSameDay(day, eventDate);
         }).sort(utils.dateSort);
     }
 
@@ -44,13 +44,15 @@ module.exports = function () {
         if (!item.eventDate) {
             return utils.getErrorMessage('Invalid Event- not scheduled');
         }
-        const description = turndownService.turndown(
+        const description = 
             `Start: ${format(new Date(item.eventDate), 'MM/dd/yyyy')}
-            <br/>PT: ${format(new Date().setHours(item.event.pst.substr(0, 2), item.event.pst.substr(3, 2)), 'hh:mm a')}
-            <br/>CT: ${format(new Date().setHours(item.event.cst.substr(0, 2), item.event.cst.substr(3, 2)), 'hh:mm a')}
-            <br/>ET: ${format(new Date().setHours(item.event.est.substr(0, 2), item.event.est.substr(3, 2)), 'hh:mm a')}
-            <br/><br/>${bbConvert(item.event.description)}`);
-        return new MessageEmbed()
+            PT: ${format(new Date().setHours(item.event.pst.substr(0, 2), item.event.pst.substr(3, 2)), 'hh:mm a')}
+            CT: ${format(new Date().setHours(item.event.cst.substr(0, 2), item.event.cst.substr(3, 2)), 'hh:mm a')}
+            ET: ${format(new Date().setHours(item.event.est.substr(0, 2), item.event.est.substr(3, 2)), 'hh:mm a')}
+            
+            ${bbConvert(item.event.description)}`;
+
+            return new MessageEmbed()
             .setURL(item.link)
             .setTitle(item.event.name)
             .setColor(0x00FFFF)

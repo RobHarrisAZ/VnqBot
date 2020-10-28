@@ -103,9 +103,9 @@ exports.esoData = {
         { id: 14, name: `The Rift` },
         { id: 15, name: `Craglorn` },
         { id: 16, name: `Coldharbour` },
-        { id: 17, name: `Cyrodil (EP)` },
-        { id: 18, name: `Cyrodil (AD)` },
-        { id: 19, name: `Cyrodil (DC)` }
+        { id: 17, name: `Cyrodil (EP Area)` },
+        { id: 18, name: `Cyrodil (AD Area)` },
+        { id: 19, name: `Cyrodil (DC Area)` }
     ],
     spdZones: [
         { id: 0, zones: [12]},

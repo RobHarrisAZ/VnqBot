@@ -142,13 +142,13 @@ module.exports = function () {
     }
 
     this.getMnmActivities = () => {
-        const baseDate = new Date('01/20/2020 20:00');
+        const baseDate = new Date('11/10/2020 20:00');
         const now = Date.now();
         const hour = new Date(now).getHours();
         const day = getDay(now);
 
         let diff_rot = differenceInWeeks(now, baseDate);
-        const activityIndex = diff_rot % 10;
+        const activityIndex = diff_rot % 11;
         return data.esoData.mnmActivities[activityIndex].name;
     }
 

@@ -95,6 +95,13 @@ client.on('message', msg => {
                 .setDescription(activityText)
                 .setColor(0x00FFFF));
             break;
+        case '!mnm list':
+            const mnmAllActivityText = events.getMnmActivities({all: true});
+            msg.channel.send(new MessageEmbed()
+                .setTitle(`MNM Zone Order:`)
+                .setDescription(mnmAllActivityText)
+                .setColor(0x00FFFF));
+            break;
         case '!spd':
             const spdActivityText = events.getSpdActivities();
             msg.channel.send(new MessageEmbed()
@@ -220,6 +227,7 @@ function getHelpMessage() {
         .addField(`!cal ####`, `Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.`)
         .addField(`!channelinfo`, `View the current channel's ID and name.`)
         .addField(`!mnm`, `Show this week's MNM Zones.`)
+        .addField(`!mnm list`, `Show MNM Zone Order.`)
         .addField(`!refresh`, `Force a reload of events. This happens automatically daily.`)
         .addField(`!pledges`, `Show today's pledges.`)
         .addField(`!sms`, `Show this week's SMS Zones.`)

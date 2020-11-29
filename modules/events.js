@@ -141,15 +141,22 @@ module.exports = function () {
         return source[zoneIndex].zones.map(zone => data.esoData.zones[zone].name);
     }
 
-    this.getMnmActivities = () => {
-        const baseDate = new Date('11/10/2020 20:00');
+    this.getMnmActivities = (options) => {
+        const baseDate = new Date('11/23/2020 20:00');
         const now = Date.now();
         const hour = new Date(now).getHours();
         const day = getDay(now);
 
-        let diff_rot = differenceInWeeks(now, baseDate);
-        const activityIndex = diff_rot % 11;
-        return data.esoData.mnmActivities[activityIndex].name;
+        if (options && options.all) {
+            let activityText = ``;
+            let activities = data.esoData.mnmActivities.map(e => e.name);
+            activities.forEach(a => activityText += `${a}\n`);
+            return activityText;
+        } else {
+            let diff_rot = differenceInWeeks(now, baseDate);
+            const activityIndex = diff_rot % 11;
+            return data.esoData.mnmActivities[activityIndex].name;
+        }
     }
 
     this.getSpdActivities = (options) => {

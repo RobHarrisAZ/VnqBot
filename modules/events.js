@@ -161,7 +161,7 @@ module.exports = function () {
 
     this.getSpdActivities = (options) => {
         const multiplier = data.esoData.spdZones.length;
-        const baseDate = new Date('06/02/2020 20:00');
+        const baseDate = new Date('06/01/2020 20:00');
         const now = Date.now();
         // const hour = new Date(now).getHours();
         // const day = getDay(now);

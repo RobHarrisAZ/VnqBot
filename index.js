@@ -2,7 +2,7 @@ require('dotenv').config();
 const pjson = require('./package.json');
 
 const CronJob = require('node-cron');
-const { Client, MessageEmbed } = require('discord.js');
+const { Client, MessageEmbed, StreamDispatcher, Message } = require('discord.js');
 const { addDays, isAfter } = require('date-fns');
 const utils = require('./modules/utility');
 const channelUtils = require('./modules/channels');
@@ -14,6 +14,7 @@ const events = new eventUtils();
 const guildSite = process.env.GUILD_SITE;
 const guildName = process.env.GUILD_NAME;
 const client = new Client();
+const fnf_url = `http://infidelux.net/vanquish_fnf.mp3`;
 
 let vCalendarData = null;
 let channelTargets = [process.env.CHANNEL1, process.env.CHANNEL2];
@@ -125,6 +126,18 @@ client.on('message', msg => {
                 .setTitle(`Undaunted Tuesday Information:`)
                 .setDescription(udtActivityText)
                 .setColor(0x00FFFF));
+            break;
+        case '!fnf intro':
+            // Check for officer permissions first
+            if (msg.member.roles.cache.some(role => role.name === 'Officers')) {
+                const channelToSend = msg.member.voice.channel;
+                channelToSend.join().then(async(connection) => {
+                    connection.play(fnf_url).on('finish', end => channelToSend.leave());
+                }, (err) => {
+                    channelToSend.leave();
+                    console.log(err)
+                });
+                }
             break;
         case '!version':
             const version = pjson.version;

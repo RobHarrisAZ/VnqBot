@@ -161,7 +161,7 @@ module.exports = function () {
 
     this.getSpdActivities = (options) => {
         const multiplier = data.esoData.spdZones.length;
-        const baseDate = new Date('06/01/2020 20:00');
+        const baseDate = new Date('05/18/2020 20:00');
         const now = Date.now();
         // const hour = new Date(now).getHours();
         // const day = getDay(now);
@@ -174,7 +174,9 @@ module.exports = function () {
         } else {
             const numberOfDays = differenceInDays(now, baseDate);
             let periods = Math.round(numberOfDays / 14);
-            periods = (numberOfDays % 14) < 7 ? periods+1 : periods;
+            // const remainingDaysInPeriod = (numberOfDays % 14);
+            // This section may not be needed. Need to test 
+            // periods = (remainingDaysInPeriod < 7 && remainingDaysInPeriod > 0) ? periods+1 : periods;
             return getZones(periods, multiplier, data.esoData.spdZones);    
         }
     }

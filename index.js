@@ -30,7 +30,7 @@ client.on('ready', () => {
 client.on('message', msg => {
     let zoneText = '';
 
-    switch (msg.content) {
+    switch (msg.content.toLowerCase()) {
         case '!vnqhelp':
             msg.channel.send(getHelpMessage());
             break;
@@ -236,6 +236,7 @@ function loadEvents() {
 function getHelpMessage() {
     return new MessageEmbed()
         .setTitle('Vanquish Bot Commands')
+        .addField(`All commands are case insensitive`)
         .addField(`!vnqhelp`, `Display this help info about commands.`)
         .addField(`!cal ####`, `Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.`)
         .addField(`!channelinfo`, `View the current channel's ID and name.`)

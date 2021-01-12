@@ -236,7 +236,7 @@ function loadEvents() {
 function getHelpMessage() {
     return new MessageEmbed()
         .setTitle('Vanquish Bot Commands')
-        .addField(`All commands are case insensitive`, ``)
+        .setDescription(`All commands are case insensitive`)
         .addField(`!vnqhelp`, `Display this help info about commands.`)
         .addField(`!cal ####`, `Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.`)
         .addField(`!channelinfo`, `View the current channel's ID and name.`)

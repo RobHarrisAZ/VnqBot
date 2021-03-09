@@ -57,7 +57,9 @@ exports.esoData = {
         "ug": { name: 'Unhallowed Grave', link: 'https://www.youtube.com/watch?v=D6xHDg7CcSs'},
         "ir": { name: 'Icereach', link: 'https://www.youtube.com/watch?v=KVZp83mLQ-4'},
         "sg": { name: 'Stone Garden', link: '#'},
-        "ct": { name: 'Castle Thorn', link: '#'}
+        "ct": { name: 'Castle Thorn', link: '#'},
+        "gob": { name: 'Gates of Oblivion', link: '#'},
+        "bdv": { name: 'Black Drake Villa', link: '#'}
     },
     pledgeQuestGiver: ["Maj al-Ragath", "Glirion the Redbeard", "Urgarlag Chief-Bane"],
     pledges: [{
@@ -68,8 +70,8 @@ exports.esoData = {
         instances: ['coh1', 'vol', 'bc', 'dire', 'vom', 'coh2', 'coa1', 'ti', 'bh', 'arx', 'sw', 'coa2']
     }, {
         pledgeQuestGiver: 2,
-        instances: ['mf', 'lom', 'ir', 'ug', 'sg', 'ct', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv']
-    }], //'fv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm'
+        instances: ['gob', 'bdv', 'icp', 'rom', 'wgt', 'cos', 'bf', 'fh', 'fl', 'sp', 'mhk', 'ms', 'dm', 'fv', 'mf', 'lom', 'ir', 'ug', 'sg', 'ct']
+    }], 
     trials: ['aa', 'hrc', 'so', 'mol', 'hof', 'as', 'cr', 'ss', 'ka' ],
     firstBosses: [
         { name: 'Lightning Storm Atronach', trial: 'aa' },

@@ -72,6 +72,13 @@ client.on('message', msg => {
         //         .setDescription(`OUR EVENTS FOR THE DAY:\n\n11:00am – 1:00pm EST: SMS (Saturday Morning Smackdown) Join with Infi as he takes us through overland in three different zones to take down World Bosses.\n\n1:30pm – 3:00pm EST: MNM (Monday Night Madness) With Cy taking over the lead, join us as we do another run of World Bosses through DLC’s for the daily coffers.\n\n3:30pm – 4:30pm EST: Lawn Darts. It’s an old Vanquish Tradition as we plummet to our deaths to land on the corpse of our fearless leader, Savina. Prizes are yet to be determined.\n\n5:00pm – 6:30pm EST: Vanquish Dome! You’ve heard of Mad Max. Now be him as we meet in Stormhaven to fight one on one gladiator style. Wearing only a Barbaric Helm (supplied) and a weapon (random), face your opponent using your weapon or skills that can fit on 1 bar. It’s fun. It’s glorious. It’s Vanquish Dome! Prizes are yet to be determined.\n\n7:00pm EST: VANQUISH ROLL CALL. Gather up at the Vanquish Bridge, Daggerfall bridge, near the Impresario, and wear your Guild Tabards. Show your Vanquish colors as Savina leads us forward. Guild meeting will be done in Guild Chat to prevent potential ‘spamming’. Please NO Pets of any kind.\n\n7:45pm – 8:30pm EST: Vanquish Murder Mystery. Another old favorite from the past. Join us as Duck leads us on an adventure to search for clues on where the assassin is hiding. Finish him/her off and avenge the attempted assassination of ONE of our Vanquish Members. Prizes are yet to be determined.\n\n9:00pm – 11:00pm EST: FNF (Friday Night Fights) It’s Friday on Saturday! Head to Cyrodiil, standard 30 day, as DanTheMan has a repeat performance of FNF. Fly your Lion Banners, wear your guild tabards, as we knock EP and AD back to their gates.\n\n11:30pm – 1:00am EST: Saturday Night Trials. Get geared! A couple weeks ago we had two full groups hitting 3 trials each. Refill those drinks and join Infi and Kildaan as we lead multiple groups through several normal trials for everyone!`)
         //         .setColor(0x20F41F));
         //     break;
+        case '!roll':
+            const result = utils.getRandomInteger(1, 100).toString();
+            const memberName = msg.member.displayName;
+            msg.channel.send(new MessageEmbed()
+                .setDescription(`${memberName} rolls **${result}** (1-100)`)
+                .setColor(0x007DD0));
+            break;
         case '!sms':
             const smsZones = events.getSmsZones();
             smsZones.forEach(zone => zoneText += '\n' + zone);
@@ -146,7 +153,39 @@ client.on('message', msg => {
                 .setTitle(`VNQBot`)
                 .setDescription(versionText)
                 .setColor(0xFF00FF));
+            break;
         default:
+            if (msg.content.startsWith('!roll ')) { // && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
+                // Determine if there is one parameter or two
+                const lastIndex = msg.content.lastIndexOf(' ');
+                const index = msg.content.indexOf(' ');
+                const parameters = msg.content.substr(index + 1);
+                const memberName = msg.member.displayName;
+                let min = 1;
+                let max = 100;
+                let result = '0';
+
+                if (lastIndex === index) {
+                    if (!isNaN(parameters)) {
+                        max = parseInt(parameters); 
+                    }
+
+                    result = utils.getRandomInteger(min, max).toString();
+                } else {
+                    if (!isNaN(parameters.substr(0, parameters.indexOf(' ')))) {
+                        min = parseInt(parameters.substr(0, parameters.indexOf(' '))); 
+                    }
+                    if (!isNaN(parameters.substr(parameters.lastIndexOf(' ') + 1))) {
+                        max = parseInt(parameters.substr(parameters.lastIndexOf(' ') + 1)); 
+                    }
+
+                    result = utils.getRandomInteger(min, max).toString();
+                }
+
+                msg.channel.send(new MessageEmbed()
+                .setDescription(`${memberName} rolls **${result}** (${min}-${max})`)
+                .setColor(0x007DD0));
+            }
             if (msg.content.startsWith('!cal ') && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
                 const index = parseInt(msg.content.substr(msg.content.indexOf(' ') + 1));
                 if (vCalendarData.events.length > index + 1) {
@@ -238,18 +277,20 @@ function getHelpMessage() {
         .setTitle('Vanquish Bot Commands')
         .setDescription(`All commands are case insensitive`)
         .addField(`!vnqhelp`, `Display this help info about commands.`)
-        .addField(`!cal ####`, `Show event ### where ### is a number from 0 to ${vCalendarData.events.length}.`)
+        .addField(`!cal *eventIndex*`, `Show event *eventIndex* where *eventIndex* is a number from 0 to ${vCalendarData.events.length}.`)
         .addField(`!channelinfo`, `View the current channel's ID and name.`)
         .addField(`!mnm`, `Show this week's MNM Zones.`)
         .addField(`!mnm list`, `Show MNM Zone Order.`)
-        .addField(`!refresh`, `Force a reload of events. This happens automatically daily.`)
         .addField(`!pledges`, `Show today's pledges.`)
+        .addField(`!refresh`, `Force a reload of events. This happens automatically daily.`)
+        .addField('!roll', `Roll a random number 1-100.`)
+        .addField('!roll *min* *max*', `Roll a random number between *min* and *max*. (Ex. !roll 10 20.)`)
         .addField(`!sms`, `Show this week's SMS Zones.`)
         .addField(`!sms list`, `Show SMS Zone Order.`)
         .addField(`!spd`, `Show the upcoming SPD Zone.`)
         .addField(`!spd list`, `Show the order of SPD Zones.`)
         .addField(`!today`, `Show today's events.`)
-        .addField(`!today+#`, `Show events from # days in the future.`)
+        .addField(`!today+*days*`, `Show events from # days in the future.`)
         .addField(`!ttp <*channel name*> [--*groupSize*]`, `Form up random groups from the list of users in *channel name*. 
         This is not case sensitive but does respect the whitespace in a name. The default *groupSize* is 4 if none is provided.`)
         .addField(`!udt`, `Show Undaunted Tuesday Information.`)

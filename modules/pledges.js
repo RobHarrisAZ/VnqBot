@@ -25,24 +25,24 @@ exports.getDailyPledges = function (dateTime) {
 
   pledgeText = [];
   pledgeNext = [];
-  for (var i = 0; i < data.esoData.pledgeQuestGiver.length; i++) {
+  for (var npc = 0; npc < data.esoData.pledgeQuestGiver.length; npc++) {
     var pledge =
-      i === 2
-        ? this.getDungeon(i, diff_rot, 20)
-        : this.getDungeon(i, diff_rot, 12);
+      npc === 2
+        ? this.getDungeon(npc, diff_rot, getDungeonCount(npc))
+        : this.getDungeon(npc, diff_rot, getDungeonCount(npc));
     pledgeText.push(
       "* [" +
         pledge.name +
         "](" +
         pledge.link +
         ") (by " +
-        data.esoData.pledgeQuestGiver[i] +
+        data.esoData.pledgeQuestGiver[npc] +
         ")"
     );
     pledge =
-      i == 2
-        ? this.getDungeon(i, diff_rot + 1, 20)
-        : this.getDungeon(i, diff_rot + 1, 12);
+      npc == 2
+        ? this.getDungeon(npc, diff_rot + 1, getDungeonCount(npc))
+        : this.getDungeon(npc, diff_rot + 1, getDungeonCount(npc));
     pledgeNext.push(`[${pledge.name}](${pledge.link})`);
   }
 
@@ -55,6 +55,9 @@ exports.getDungeon = function (questGiver, dungeonIndex, dungeonMultiplier) {
     data.esoData.pledges[questGiver].instances[dungeonIndex]
   ];
 };
+
+getDungeonCount = (questGiver) =>
+  data.esoData.pledges[questGiver].instances.length;
 // exports.getDlcDungeon = function (questGiver, dungeonIndex) {
 //     dungeonIndex = dungeonIndex % 14;
 //     return data.esoData.instances[data.esoData.pledges[questGiver].instances[dungeonIndex]];

@@ -31,13 +31,7 @@ exports.getDailyPledges = function (dateTime) {
         ? this.getDungeon(npc, diff_rot, getDungeonCount(npc))
         : this.getDungeon(npc, diff_rot, getDungeonCount(npc));
     pledgeText.push(
-      "* [" +
-        pledge.name +
-        "](" +
-        pledge.link +
-        ") (by " +
-        data.esoData.pledgeQuestGiver[npc] +
-        ")"
+      `* [${pledge.name}](${pledge.link}) (by ${data.esoData.pledgeQuestGiver[npc]})`
     );
     pledge =
       npc == 2

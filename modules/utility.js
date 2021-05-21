@@ -36,6 +36,23 @@ exports.httpGet = function (uri) {
       console.log(err);
     });
 };
+//      "User-Agent": "VnqBot",
+exports.httpFetch = async function (uri) {
+  const response = await fetch(uri, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "User-Agent": "vnqbot",
+    },
+  });
+  return await response.json();
+  // .then((response) => {
+  //   return response.json();
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  // });
+};
 
 exports.isFutureDate = function (item) {
   return isAfter(new Date(item.date), Date.now());

@@ -359,7 +359,7 @@ function scheduleJobs(data) {
   );
   // Hourly check for new applications
   CronJob.schedule(
-    "*/1 * * * *",
+    "*/60 * * * *",
     function () {
       console.log(`Checking for new open applications`);
       const currentApps = applicantData.map((row) => row.id);

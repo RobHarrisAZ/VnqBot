@@ -23,11 +23,7 @@ const client = new Client();
 const fnf_url = `http://infidelux.net/vanquish_fnf.mp3`;
 
 let vCalendarData = null;
-let channelTargets = [
-  process.env.CHANNEL1,
-  process.env.CHANNEL2,
-  process.env.CHANNEL3,
-];
+let channelTargets = [process.env.CHANNEL1, process.env.CHANNEL2];
 let applicantData = [];
 
 client.on("ready", () => {

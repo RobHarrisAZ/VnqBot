@@ -1,6 +1,5 @@
 require("dotenv").config();
 const pjson = require("./package.json");
-
 const CronJob = require("node-cron");
 const {
   Client,
@@ -27,7 +26,7 @@ let vCalendarData = null;
 let channelTargets = [
   process.env.CHANNEL1,
   process.env.CHANNEL2,
-  process.env.CHANNEL4,
+  process.env.CHANNEL3,
 ];
 let applicantData = [];
 
@@ -364,16 +363,16 @@ function scheduleJobs(data) {
     function () {
       console.log(`Checking for new open applications`);
       const currentApps = applicantData.map((row) => row.id);
-      let data = [];
       appUtils.processOpenApplications(guildSite).then((appData) => {
-        data = appData;
-        applicantData = [...applicantData, ...data];
-        const newApps = applicantData.filter(
-          (app) => !currentApps.includes(app.id)
-        );
+        const newApps = appData.filter((app) => !currentApps.includes(app.id));
+        applicantData = [...appData];
         if (newApps.length) {
-          let channel = client.channels.cache.get(channelTargets.CHANNEL4);
-          newApps.forEach((app) => channel.send(`New App: ${app.id}`));
+          let channel = client.channels.cache.get(process.env.CHANNEL3);
+          newApps.forEach((app) => {
+            appUtils
+              .formatApplication(app.id, guildSite)
+              .then((message) => channel.send(message));
+          });
         }
       });
     },

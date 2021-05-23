@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { differenceInMinutes, isAfter } = require("date-fns");
 const fetch = require("node-fetch");
+const { HttpResponseError } = require("./HttpResponseError");
 
 exports.shuffle = function (array) {
   var currentIndex = array.length,
@@ -52,6 +53,34 @@ exports.httpFetch = async function (uri) {
   // .catch((err) => {
   //   console.log(err);
   // });
+};
+
+exports.httpPost = async (uri, payload) => {
+  const response = await fetch(uri, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: payload,
+  });
+  try {
+    checkStatus(response);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+
+    const errorBody = await error.response.text();
+    console.error(`Error body: ${errorBody}`);
+  }
+};
+
+checkStatus = (response) => {
+  if (response.ok) {
+    return response;
+  } else {
+    throw new HttpResponseError(response);
+  }
 };
 
 exports.isFutureDate = function (item) {

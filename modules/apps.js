@@ -55,6 +55,16 @@ module.exports = function () {
         turndownService.turndown(appMessage).substr(0, 255),
         false
       );
+      const nameQuestion = app.site_application_fields.find(
+        (q) =>
+          q.question ===
+          "Thank you for applying to Vanquish, please list the MAIN character you are applying to the guild with, your preferred role and your @Name"
+      );
+      message.addField(
+        `Main Character & @Name`,
+        turndownService.turndown(nameQuestion.answer).substr(0, 255),
+        false
+      );
       // app.site_application_fields.forEach((question) => {
       //   if (
       //     question.question !== "Race and Class" &&

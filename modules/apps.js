@@ -1,3 +1,5 @@
+const { getHours } = require("date-fns");
+
 module.exports = function () {
   const TurndownService = require("turndown");
   const turndownService = new TurndownService();
@@ -65,24 +67,43 @@ module.exports = function () {
         turndownService.turndown(nameQuestion.answer).substr(0, 255),
         false
       );
-      // app.site_application_fields.forEach((question) => {
-      //   if (
-      //     question.question !== "Race and Class" &&
-      //     question.question !== "Main Character" &&
-      //     question.question !== "Email" &&
-      //     question.question !== "Your Name"
-      //   ) {
-      //     //appMessage +=
-      //     message.addField(
-      //       turndownService.turndown(question.question).substr(0, 255),
-      //       turndownService.turndown(question.answer).substr(0, 255),
-      //       false
-      //     );
-      //   }
-      // });
       message.setTitle(`New Application received`).setColor(0xff00ff);
 
       return message;
+    });
+  };
+
+  this.formatApplicationDetails = async (openApps, guildUrl) => {
+    let message = new MessageEmbed();
+    return openApps.forEach((app) => {
+      this.getApplication(guildUrl, app.id).then((appDetail) => {
+        app.application_details = appDetail;
+
+        const nameQuestion =
+          app.application_details.site_application_fields.find(
+            (q) =>
+              q.question ===
+              "Please list your @name. This will be used for your guild invite if/when you are application is accepted. (Your @name IS your UserID seen in the example image below.)"
+          );
+        message.setTitle(`Open Applications`);
+        message.addField(
+          `Name:`,
+          turndownService
+            .turndown(
+              `<a href="${guildUrl}/site_applications/${app.application_details.site_application.id}">${app.application_details.site_application.name}</a>`
+            )
+            .substr(0, 1024),
+          true
+        );
+        message.addField(
+          `Main/@Name`,
+          turndownService
+            .turndown("```" + nameQuestion.answer + "```")
+            .substr(0, 1024),
+          true
+        );
+        message.addField(`━━━━━━━━━━━━⊱⋆⊰━━━━━━━━━━━━`, "◙", false);
+      });
     });
   };
 

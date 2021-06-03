@@ -53,17 +53,17 @@ module.exports = function () {
       let message = new MessageEmbed();
       let appMessage = `<a href="${guildUrl}/site_applications/${app.site_application.id}">${app.site_application.name}</a>`;
       message.addField(
-        `Name `,
+        `Name: `,
         turndownService.turndown(appMessage).substr(0, 255),
         false
       );
       const nameQuestion = app.site_application_fields.find(
         (q) =>
           q.question ===
-          "Thank you for applying to Vanquish, please list the MAIN character you are applying to the guild with, your preferred role and your @Name"
-      );
+          "Please list your @name. This will be used for your guild invite if/when you are application is accepted. (Your @name IS your UserID seen in the example image below.)"
+      ) || { answer: "N/A" };
       message.addField(
-        `Main Character & @Name`,
+        `@Name: `,
         turndownService.turndown(nameQuestion.answer).substr(0, 255),
         false
       );

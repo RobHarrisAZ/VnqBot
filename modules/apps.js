@@ -60,7 +60,7 @@ module.exports = function () {
       const nameQuestion = app.site_application_fields.find(
         (q) =>
           q.question ===
-          "Please list your @name. This will be used for your guild invite if/when you are application is accepted. (Your @name IS your UserID seen in the example image below.)"
+          "Please list your @name. This will be used for your guild invite if//when you are application is accepted. (Your @name IS your UserID seen in the example image below.)"
       ) || { answer: "N/A" };
       message.addField(
         `@Name: `,

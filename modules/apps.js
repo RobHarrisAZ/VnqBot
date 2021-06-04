@@ -55,20 +55,21 @@ module.exports = function () {
       message.addField(
         `Name: `,
         turndownService.turndown(appMessage).substr(0, 255),
-        false
+        true
       );
-      const nameQuestion = app.site_application_fields.find(
+      let nameQuestion = app.site_application_fields.find(
         (q) =>
           q.question ===
-          "Please list your @name. This will be used for your guild invite if//when you are application is accepted. (Your @name IS your UserID seen in the example image below.)"
-      ) || { answer: "N/A" };
+          "Please list your @name. This will be used for your guild invite if/when you are application is accepted.  (Your @name IS your UserID seen in the example image below.)"
+      );
+      nameQuestion = nameQuestion || { answer: "N/A" };
       message.addField(
         `@Name: `,
         turndownService.turndown(nameQuestion.answer).substr(0, 255),
-        false
+        true
       );
       message.setTitle(`New Application received`).setColor(0xff00ff);
-
+      message;
       return message;
     });
   };

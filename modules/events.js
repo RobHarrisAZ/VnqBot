@@ -200,7 +200,7 @@ module.exports = function () {
   };
 
   this.getMnmActivities = (options) => {
-    const baseDate = new Date("11/23/2020 20:00");
+    const baseDate = new Date("05/31/2021 20:00");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);

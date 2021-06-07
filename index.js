@@ -354,28 +354,28 @@ function scheduleJobs(data) {
     "America/Los_Angeles"
   );
   // Hourly check for new applications
-  CronJob.schedule(
-    "*/60 * * * *",
-    function () {
-      console.log(`Checking for new open applications`);
-      const currentApps = applicantData.map((row) => row.id);
-      appUtils.processOpenApplications(guildSite).then((appData) => {
-        const newApps = appData.filter((app) => !currentApps.includes(app.id));
-        applicantData = [...appData];
-        if (newApps.length) {
-          let channel = client.channels.cache.get(process.env.CHANNEL3);
-          newApps.forEach((app) => {
-            appUtils
-              .formatApplication(app.id, guildSite)
-              .then((message) => channel.send(message));
-          });
-        }
-      });
-    },
-    null,
-    true,
-    "America/Los_Angeles"
-  );
+  // CronJob.schedule(
+  //   "*/60 * * * *",
+  //   function () {
+  //     console.log(`Checking for new open applications`);
+  //     const currentApps = applicantData.map((row) => row.id);
+  //     appUtils.processOpenApplications(guildSite).then((appData) => {
+  //       const newApps = appData.filter((app) => !currentApps.includes(app.id));
+  //       applicantData = [...appData];
+  //       if (newApps.length) {
+  //         let channel = client.channels.cache.get(process.env.CHANNEL3);
+  //         newApps.forEach((app) => {
+  //           appUtils
+  //             .formatApplication(app.id, guildSite)
+  //             .then((message) => channel.send(message));
+  //         });
+  //       }
+  //     });
+  //   },
+  //   null,
+  //   true,
+  //   "America/Los_Angeles"
+  // );
 }
 
 loadEvents = () => {

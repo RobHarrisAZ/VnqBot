@@ -27,16 +27,16 @@ exports.getDailyPledges = function (dateTime) {
   pledgeNext = [];
   for (var npc = 0; npc < data.esoData.pledgeQuestGiver.length; npc++) {
     var pledge =
-      npc === 2
-        ? this.getDungeon(npc, diff_rot, getDungeonCount(npc))
-        : this.getDungeon(npc, diff_rot, getDungeonCount(npc));
+      //npc === 2
+      //? this.getDungeon(npc, diff_rot, getDungeonCount(npc)) :
+      this.getDungeon(npc, diff_rot, getDungeonCount(npc));
     pledgeText.push(
       `* [${pledge.name}](${pledge.link}) (by ${data.esoData.pledgeQuestGiver[npc]})`
     );
     pledge =
-      npc == 2
-        ? this.getDungeon(npc, diff_rot + 1, getDungeonCount(npc))
-        : this.getDungeon(npc, diff_rot + 1, getDungeonCount(npc));
+      //npc == 2
+      //  ? this.getDungeon(npc, diff_rot + 1, getDungeonCount(npc)) :
+      this.getDungeon(npc, diff_rot + 1, getDungeonCount(npc));
     pledgeNext.push(`[${pledge.name}](${pledge.link})`);
   }
 

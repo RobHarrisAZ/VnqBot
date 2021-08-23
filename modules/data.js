@@ -180,6 +180,8 @@ exports.esoData = {
     ct: { name: "Castle Thorn", link: "#" },
     tc: { name: "The Cauldron", link: "#" },
     bdv: { name: "Black Drake Villa", link: "#" },
+    dc: { name: "The Dread Cellar", link: "#" },
+    rpb: { name: "Red Petal Bastion", link: "#" },
   },
   pledgeQuestGiver: [
     "Maj al-Ragath",
@@ -226,6 +228,8 @@ exports.esoData = {
       instances: [
         "bdv",
         "tc",
+        "dc",
+        "rpb",
         "icp",
         "rom",
         "wgt",

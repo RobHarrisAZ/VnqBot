@@ -176,8 +176,14 @@ exports.esoData = {
       name: "Icereach",
       link: "https://www.youtube.com/watch?v=KVZp83mLQ-4",
     },
-    sg: { name: "Stone Garden", link: "#" },
-    ct: { name: "Castle Thorn", link: "#" },
+    sg: {
+      name: "Stone Garden",
+      link: "https://www.youtube.com/watch?v=KijQ_zOm7CM",
+    },
+    ct: {
+      name: "Castle Thorn",
+      link: "https://www.youtube.com/watch?v=nvoPWSlIS_E",
+    },
     tc: { name: "The Cauldron", link: "#" },
     bdv: { name: "Black Drake Villa", link: "#" },
     dc: { name: "The Dread Cellar", link: "#" },

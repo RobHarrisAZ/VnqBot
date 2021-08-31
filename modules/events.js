@@ -212,7 +212,7 @@ module.exports = function () {
       return activityText;
     } else {
       let diff_rot = differenceInWeeks(now, baseDate);
-      const activityIndex = diff_rot % 11;
+      const activityIndex = diff_rot % 12;
       return data.esoData.mnmActivities[activityIndex].name;
     }
   };

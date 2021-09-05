@@ -236,6 +236,7 @@ exports.esoData = {
         "tc",
         "rpb",
         "dc",
+        "rpb",
         "icp",
         "rom",
         "wgt",

@@ -234,7 +234,6 @@ exports.esoData = {
       instances: [
         "bdv",
         "tc",
-        "rpb",
         "dc",
         "rpb",
         "icp",

@@ -173,7 +173,7 @@ module.exports = function () {
 
   this.getSmsZones = (options) => {
     const multiplier = data.esoData.smsZones.length;
-    const baseDate = new Date("09/04/2021");
+    const baseDate = new Date("09/05/2021");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);

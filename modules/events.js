@@ -200,7 +200,7 @@ module.exports = function () {
   };
 
   this.getMnmActivities = (options) => {
-    const baseDate = new Date("05/31/2021 20:00");
+    const baseDate = new Date("11/8/2021 20:00");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);
@@ -212,7 +212,7 @@ module.exports = function () {
       return activityText;
     } else {
       let diff_rot = differenceInWeeks(now, baseDate);
-      const activityIndex = diff_rot % 12;
+      const activityIndex = diff_rot % 13;
       return data.esoData.mnmActivities[activityIndex].name;
     }
   };

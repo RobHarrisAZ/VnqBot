@@ -151,11 +151,21 @@ client.on("message", (msg) => {
       break;
     case "/spd":
     case "!spd":
-      const spdActivityText = events.getSpdActivities();
+      const spdActivityText = events.getSpdActivities({});
       msg.channel.send(
         new MessageEmbed()
           .setTitle(`Next SPD Zone:`)
           .setDescription(spdActivityText)
+          .setColor(0x00ffff)
+      );
+      break;
+    case "/spddlc":
+    case "!spddlc":
+      const spdDlcActivityText = events.getSpdActivities({}, true);
+      msg.channel.send(
+        new MessageEmbed()
+          .setTitle(`Next SPD DLC Zone:`)
+          .setDescription(spdDlcActivityText)
           .setColor(0x00ffff)
       );
       break;
@@ -166,6 +176,19 @@ client.on("message", (msg) => {
         new MessageEmbed()
           .setTitle(`SPD Zone Order:`)
           .setDescription(spdAllActivityText)
+          .setColor(0x00ffff)
+      );
+      break;
+    case "/spddlc list":
+    case "!spddlc list":
+      const spdDlcAllActivityText = events.getSpdActivities(
+        { all: true },
+        true
+      );
+      msg.channel.send(
+        new MessageEmbed()
+          .setTitle(`SPD DLC Zone Order:`)
+          .setDescription(spdDlcAllActivityText)
           .setColor(0x00ffff)
       );
       break;
@@ -418,37 +441,38 @@ function getHelpMessage() {
   return new MessageEmbed()
     .setTitle("Vanquish Bot Commands")
     .setDescription(`All commands are case insensitive`)
-    .addField(`!vnqhelp`, `Display this help info about commands.`)
+    .addField(`/vnqhelp`, `Display this help info about commands.`)
     .addField(
       `!cal *eventIndex*`,
       `Show event *eventIndex* where *eventIndex* is a number from 0 to ${vCalendarData.events.length}.`
     )
-    .addField(`!channelinfo`, `View the current channel's ID and name.`)
-    .addField(`!mnm`, `Show this week's MNM Zones.`)
-    .addField(`!mnm list`, `Show MNM Zone Order.`)
-    .addField(`!pledges`, `Show today's pledges.`)
+    .addField(`/channelinfo`, `View the current channel's ID and name.`)
+    .addField(`/mnm`, `Show this week's MNM Zones.`)
+    .addField(`/mnm list`, `Show MNM Zone Order.`)
+    .addField(`/pledges`, `Show today's pledges.`)
     .addField(
       `!refresh`,
       `Force a reload of events. This happens automatically daily.`
     )
-    .addField("!roll", `Roll a random number 1-100.`)
+    .addField("/roll", `Roll a random number 1-100.`)
     .addField(
-      "!roll *min* *max*",
+      "/roll *min* *max*",
       `Roll a random number between *min* and *max*. (Ex. !roll 10 20.)`
     )
-    .addField(`!sms`, `Show this week's SMS Zones.`)
-    .addField(`!sms list`, `Show SMS Zone Order.`)
-    .addField(`!spd`, `Show the upcoming SPD Zone.`)
-    .addField(`!spd list`, `Show the order of SPD Zones.`)
-    .addField(`!today`, `Show today's events.`)
-    .addField(`!today+*days*`, `Show events from # days in the future.`)
+    .addField(`/sms`, `Show this week's SMS Zones.`)
+    .addField(`/sms list`, `Show SMS Zone Order.`)
+    .addField(`/spddlc`, `Show the upcoming SPD Zone.`)
+    .addField(`/spd`, `Show the upcoming SPD Zone.`)
+    .addField(`/spd list`, `Show the order of SPD Zones.`)
+    .addField(`/today`, `Show today's events.`)
+    .addField(`/today+*days*`, `Show events from # days in the future.`)
     .addField(
-      `!ttp <*channel name*> [--*groupSize*]`,
+      `/ttp <*channel name*> [--*groupSize*]`,
       `Form up random groups from the list of users in *channel name*. 
         This is not case sensitive but does respect the whitespace in a name. The default *groupSize* is 4 if none is provided.`
     )
-    .addField(`!udt`, `Show Undaunted Tuesday Information.`)
-    .addField(`!version`, `Show Bot version info.`)
+    .addField(`/udt`, `Show Undaunted Tuesday Information.`)
+    .addField(`/version`, `Show Bot version info.`)
     .setColor(0x750080);
 }
 

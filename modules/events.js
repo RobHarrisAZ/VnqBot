@@ -196,6 +196,7 @@ module.exports = function () {
 
   getZones = function (zoneIndex, zoneMultiplier, source) {
     zoneIndex = zoneIndex % zoneMultiplier;
+    zoneIndex = zoneIndex < 0 ? 0 : zoneIndex;
     return source[zoneIndex].zones.map((zone) => data.esoData.zones[zone].name);
   };
 
@@ -217,9 +218,13 @@ module.exports = function () {
     }
   };
 
-  this.getSpdActivities = (options) => {
-    const multiplier = data.esoData.spdZones.length;
-    const baseDate = new Date("05/19/2020 20:00");
+  this.getSpdActivities = (options, dlc = false) => {
+    const multiplier = dlc
+      ? data.esoData.spdDlcZones.length
+      : data.esoData.spdZones.length;
+    const baseDate = dlc
+      ? new Date("05/02/2022 20:00")
+      : new Date("04/26/2022 20:00");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);
@@ -227,19 +232,22 @@ module.exports = function () {
     if (options && options.all) {
       let activityText = ``;
       for (let idx = 0; idx < multiplier; idx++) {
-        activityText += getZones(idx, multiplier, data.esoData.spdZones) + `\n`;
+        activityText +=
+          getZones(
+            idx,
+            multiplier,
+            dlc ? data.esoData.spdDlcZones : data.esoData.spdZones
+          ) + `\n`;
       }
       return activityText;
     } else {
       let diff_rot = differenceInWeeks(now, baseDate);
       let periods = Math.floor(diff_rot / 2);
-      // if (day === 6 && hour > 10) {
-      //     diff_rot++;
-      // }
-      // const remainingDaysInPeriod = (diff_rot % 14);
-      // This section may not be needed. Need to test
-      // periods = (remainingDaysInPeriod < 7 && remainingDaysInPeriod > 0) ? periods+1 : periods;
-      return getZones(periods, multiplier, data.esoData.spdZones);
+      return getZones(
+        periods,
+        multiplier,
+        dlc ? data.esoData.spdDlcZones : data.esoData.spdZones
+      );
     }
   };
 };

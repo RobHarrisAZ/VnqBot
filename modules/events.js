@@ -224,8 +224,8 @@ module.exports = function () {
       : data.esoData.spdZones.length;
     const baseDate = dlc
       ? new Date("05/02/2022 20:00")
-      : new Date("04/26/2022 20:00");
-    const now = Date.now();
+      : new Date("04/25/2022 20:00");
+    const now = new Date();
     const hour = new Date(now).getHours();
     const day = getDay(now);
 
@@ -242,7 +242,7 @@ module.exports = function () {
       return activityText;
     } else {
       let diff_rot = differenceInWeeks(now, baseDate);
-      let periods = Math.floor(diff_rot / 2);
+      let periods = Math.ceil(diff_rot / 2);
       return getZones(
         periods,
         multiplier,

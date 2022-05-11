@@ -223,8 +223,8 @@ module.exports = function () {
       ? data.esoData.spdDlcZones.length
       : data.esoData.spdZones.length;
     const baseDate = dlc
-      ? new Date("05/02/2022 20:00")
-      : new Date("04/25/2022 20:00");
+      ? new Date("05/03/2022 20:00")
+      : new Date("04/26/2022 20:00");
     const now = new Date();
     const hour = new Date(now).getHours();
     const day = getDay(now);

@@ -202,6 +202,8 @@ exports.esoData = {
     },
     ca: { name: "Coral Aerie", link: "#" },
     sr: { name: "Shipwright's Regret", link: "#" },
+    ere: { name: "Earthen Root Enclave", link: "#" },
+    gd: { name: "Graven Deep", link: "#" },
   },
   pledgeQuestGiver: [
     "Maj al-Ragath",
@@ -212,8 +214,6 @@ exports.esoData = {
     {
       pledgeQuestGiver: 0,
       instances: [
-        "sc1",
-        "dc2",
         "eh1",
         "ws2",
         "fg1",
@@ -224,13 +224,13 @@ exports.esoData = {
         "sc2",
         "bc1",
         "fg2",
+        "sc1",
+        "dc2",
       ],
     },
     {
       pledgeQuestGiver: 1,
       instances: [
-        "coa1",
-        "ti",
         "bh",
         "arx",
         "sw",
@@ -241,6 +241,8 @@ exports.esoData = {
         "dire",
         "vom",
         "coh2",
+        "coa1",
+        "ti",
       ],
     },
     {
@@ -258,6 +260,8 @@ exports.esoData = {
         "dc",
         "ca",
         "sr",
+        "ere",
+        "gd",
         "icp",
         "rom",
         "wgt",

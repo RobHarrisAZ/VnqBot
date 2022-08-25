@@ -522,3 +522,5 @@ function getHelpMessage() {
 //         .setColor(0xFF00FF)
 //         .setDescription(turndownService.turndown(channelList));
 // }
+
+//  TODO: Get latest activity from the website and output to a channel on interval

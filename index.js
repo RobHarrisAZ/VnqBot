@@ -13,14 +13,19 @@ const channelUtils = require("./modules/channels");
 const pledgeUtils = require("./modules/pledges");
 const ttp = require("./modules/ttp");
 const eventUtils = require("./modules/events");
-const applicantUtils = require("./modules/apps");
+const mediaUtil = require("./modules/media");
 const events = new eventUtils();
-const appUtils = new applicantUtils();
 
 const guildSite = process.env.GUILD_SITE;
 const guildName = process.env.GUILD_NAME;
 const client = new Client();
-const fnf_url = `http://infidelux.net/vanquish_fnf.mp3`;
+const fnf_url = `./vanquish_fnf.mp3`; //`http://infidelux.net/vanquish_fnf.mp3`;
+const music_url = [
+  `./A_Friday_Night_Fight_Christmas.mp3`,
+  `./Christmas_At_The_Chalamo.mp3`,
+  // `http://infidelux.net/A_Friday_Night_Fight_Christmas.mp3`,
+  // `http://infidelux.net/Christmas_At_The_Chalamo.mp3`,
+];
 
 let vCalendarData = null;
 let channelTargets = [process.env.CHANNEL1, process.env.CHANNEL2];
@@ -208,19 +213,24 @@ client.on("message", (msg) => {
     case "/fnf intro":
     case "!fnf intro":
       // Check for officer permissions first
-      if (msg.member.roles.cache.some((role) => role.name === "Officers")) {
+      if (
+        msg.member.roles.cache.some((role) => role.name === "Officers") ||
+        msg.member.roles.cache.some((role) => role.name === "Admin")
+      ) {
         const channelToSend = msg.member.voice.channel;
-        channelToSend.join().then(
-          async (connection) => {
-            connection
-              .play(fnf_url)
-              .on("finish", (end) => channelToSend.leave());
-          },
-          (err) => {
-            channelToSend.leave();
-            console.log(err);
-          }
-        );
+        mediaUtil.play(channelToSend, [fnf_url]);
+      }
+      break;
+    case "/vnqmusic":
+    case "!vnqmusic":
+      // Check for officer permissions first
+      if (
+        msg.member.roles.cache.some((role) => role.name === "Officers") ||
+        msg.member.roles.cache.some((role) => role.name === "Admin")
+      ) {
+        const channelToSend = msg.member.voice.channel;
+        // Play all songs
+        mediaUtil.play(channelToSend, music_url);
       }
       break;
     case "/version":
@@ -274,6 +284,23 @@ client.on("message", (msg) => {
             .setColor(0x007dd0)
         );
       }
+      if (msg.content.startsWith("!vnqmusic ")) {
+        if (
+          msg.member.roles.cache.some((role) => role.name === "Officers") ||
+          msg.member.roles.cache.some((role) => role.name === "Admin")
+        ) {
+          const channelToSend = msg.member.voice.channel;
+          const lastIndex = msg.content.lastIndexOf(" ");
+          const index = msg.content.indexOf(" ");
+          const parameters = msg.content.substring(index + 1);
+
+          if (!isNaN(parameters)) {
+            if (parameters > 0 && parameters <= music_url.length) {
+              mediaUtil.play(channelToSend, [music_url[parameters - 1]]);
+            }
+          }
+        }
+      }
       if (
         (msg.content.startsWith("!cal ") || msg.content.startsWith("/cal ")) &&
         !isNaN(msg.content.substring(msg.content.indexOf(" ") + 1))
@@ -304,12 +331,12 @@ client.on("message", (msg) => {
         );
       }
       if (msg.content.startsWith("!ttp") || msg.content.startsWith("/ttp")) {
-        if (msg.content.substr(msg.content.indexOf(" ") + 1).length > 3) {
+        if (msg.content.substring(msg.content.indexOf(" ") + 1).length > 3) {
           let groupSizeIndex = msg.content.indexOf("--");
           let groupSize = 4;
           let groupSizeText = null;
           if (msg.content.indexOf("--") > 0) {
-            groupSizeText = msg.content.substr(groupSizeIndex + 2);
+            groupSizeText = msg.content.substring(groupSizeIndex + 2);
             if (isNaN(groupSizeText)) {
               msg.channel.send(utils.getErrorMessage(`Invalid group size`));
               return;
@@ -320,7 +347,7 @@ client.on("message", (msg) => {
             ? msg.content
                 .substring(msg.content.indexOf(" ") + 1, groupSizeIndex)
                 .trimRight()
-            : msg.content.substr(msg.content.indexOf(" ") + 1);
+            : msg.content.substring(msg.content.indexOf(" ") + 1);
           const channelId = channelUtils.getChannelID(
             channelName,
             msg.client.channels

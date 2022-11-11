@@ -2,7 +2,7 @@ const { differenceInWeeks, getDay, differenceInDays } = require("date-fns");
 const data = require("./data");
 
 module.exports = function () {
-  const { MessageEmbed } = require("discord.js");
+  const { EmbedBuilder } = require("discord.js");
   const { differenceInMinutes, format, isSameDay } = require("date-fns");
   const TurndownService = require("turndown");
   const bbConvert = require("bbcode-to-markdown");
@@ -76,11 +76,11 @@ module.exports = function () {
             ${bbConvert(item.event.description)}`;
     //${turndownService.turndown(item.event.description)}`;
 
-    return new MessageEmbed()
+    return new EmbedBuilder()
       .setURL(item.link)
       .setTitle(item.event.name)
       .setColor(0x00ffff)
-      .setDescription(description ? description.substr(0, 2048) : "");
+      .setDescription(description ? description.substring(0, 2048) : "");
   };
 
   this.getDayEvents = (day, guildName, eventItems) => {
@@ -123,17 +123,17 @@ module.exports = function () {
 
     pledges = pledgeUtils.getDailyPledges(day);
 
-    return new MessageEmbed()
+    return new EmbedBuilder()
       .setTitle(
         `${guildName} Daily Events - ${format(
           day,
           "MM/dd/yyyy"
         )}\nToday's Activities`
       )
-      .addField(pledgeUtils.getPledgeText(), pledges[0])
-      .addField(`Tomorrow:`, pledges[1])
+      .addFields({ name: pledgeUtils.getPledgeText(), value: pledges[0] })
+      .addFields({ name: `Tomorrow:`, value: pledges[1] })
       .setColor(0xff00ff)
-      .setDescription(turndownService.turndown(description).substr(0, 2047));
+      .setDescription(turndownService.turndown(description).substring(0, 2047));
   };
 
   this.checkEvents = (channelTargets, eventItems, client) => {

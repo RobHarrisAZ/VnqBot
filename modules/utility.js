@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { differenceInMinutes, isAfter } = require("date-fns");
 const fetch = require("node-fetch");
 const { HttpResponseError } = require("./HttpResponseError");
@@ -111,7 +111,7 @@ exports.dateSort = function (item1, item2) {
 };
 
 exports.getErrorMessage = function (message) {
-  return new MessageEmbed().setTitle(message).setColor(0xff0000);
+  return new EmbedBuilder().setTitle(message).setColor(0xff0000);
 };
 
 exports.padZero = function (value, size) {

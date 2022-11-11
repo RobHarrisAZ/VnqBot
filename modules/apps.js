@@ -3,7 +3,7 @@ const { getHours } = require("date-fns");
 module.exports = function () {
   const TurndownService = require("turndown");
   const turndownService = new TurndownService();
-  const { MessageEmbed } = require("discord.js");
+  const { EmbedBuilder } = require("discord.js");
   const utils = require("./utility");
 
   this.loginToken = null;
@@ -50,24 +50,24 @@ module.exports = function () {
 
   this.formatApplication = async (appId, guildUrl) => {
     return this.getApplication(guildUrl, appId).then((app) => {
-      let message = new MessageEmbed();
+      let message = new EmbedBuilder();
       let appMessage = `<a href="${guildUrl}/site_applications/${app.site_application.id}">${app.site_application.name}</a>`;
-      message.addField(
-        `Name: `,
-        turndownService.turndown(appMessage).substr(0, 255),
-        true
-      );
+      message.addFields({
+        name: `Name: `,
+        value: turndownService.turndown(appMessage).substring(0, 255),
+        inline: true,
+      });
       let nameQuestion = app.site_application_fields.find(
         (q) =>
           q.question ===
           "Please list your @name. This will be used for your guild invite if/when you are application is accepted.  (Your @name IS your UserID seen in the example image below.)"
       );
       nameQuestion = nameQuestion || { answer: "N/A" };
-      message.addField(
-        `@Name: `,
-        turndownService.turndown(nameQuestion.answer).substr(0, 255),
-        true
-      );
+      message.addFields({
+        name: `@Name: `,
+        value: turndownService.turndown(nameQuestion.answer).substr(0, 255),
+        inline: true,
+      });
       message.setTitle(`New Application received`).setColor(0xff00ff);
       message;
       return message;
@@ -75,7 +75,7 @@ module.exports = function () {
   };
 
   this.formatApplicationDetails = async (openApps, guildUrl) => {
-    let message = new MessageEmbed();
+    let message = new EmbedBuilder();
     return openApps.forEach((app) => {
       this.getApplication(guildUrl, app.id).then((appDetail) => {
         app.application_details = appDetail;
@@ -87,23 +87,27 @@ module.exports = function () {
               "Please list your @name. This will be used for your guild invite if/when you are application is accepted. (Your @name IS your UserID seen in the example image below.)"
           );
         message.setTitle(`Open Applications`);
-        message.addField(
-          `Name:`,
-          turndownService
+        message.addFields({
+          name: `Name:`,
+          value: turndownService
             .turndown(
               `<a href="${guildUrl}/site_applications/${app.application_details.site_application.id}">${app.application_details.site_application.name}</a>`
             )
-            .substr(0, 1024),
-          true
-        );
-        message.addField(
-          `Main/@Name`,
-          turndownService
+            .substring(0, 1024),
+          inline: true,
+        });
+        message.addFields({
+          name: `Main/@Name`,
+          value: turndownService
             .turndown("```" + nameQuestion.answer + "```")
-            .substr(0, 1024),
-          true
-        );
-        message.addField(`━━━━━━━━━━━━⊱⋆⊰━━━━━━━━━━━━`, "◙", false);
+            .substring(0, 1024),
+          inline: true,
+        });
+        message.addFields({
+          name: `━━━━━━━━━━━━⊱⋆⊰━━━━━━━━━━━━`,
+          value: "◙",
+          inline: false,
+        });
       });
     });
   };

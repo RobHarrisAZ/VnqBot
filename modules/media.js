@@ -1,3 +1,62 @@
+const {
+  joinVoiceChannel,
+  VoiceConnectionStatus,
+  AudioPlayerStatus,
+  createAudioResource,
+  createAudioPlayer,
+  generateDependencyReport,
+} = require("@discordjs/voice");
+fs = require("fs");
+
+exports.play = function (channelToSend, music_url) {
+  console.log(generateDependencyReport());
+  const player = createAudioPlayer();
+  const connection = joinVoiceChannel({
+    channelId: channelToSend.id,
+    guildId: channelToSend.guild.id,
+    adapterCreator: channelToSend.guild.voiceAdapterCreator,
+    selfDeaf: false,
+    selfMute: false,
+  });
+  let sub;
+  connection.on(
+    VoiceConnectionStatus.Ready,
+    () => {
+      sub = connection.subscribe(player);
+      playSong(sub, player, connection, null, music_url, 0);
+    },
+    (err) => {
+      sub.unsubscribe();
+      connection.destroy();
+      console.log(err);
+    }
+  );
+  connection.on(VoiceConnectionStatus.Destroyed, () => {
+    console.log("Cleaning up..");
+    player.stop();
+  });
+};
+
+function playSong(sub, player, connection, url, music_url, index) {
+  if (index === 0) {
+    url = music_url[0];
+  }
+  const song = createAudioResource(fs.createReadStream(url));
+  console.log(`IsReadable: ${song.readable}`);
+  player.play(song);
+  player.on(AudioPlayerStatus.Playing, () => {
+    console.log(`Playing audio...`);
+  });
+  player.on(AudioPlayerStatus.Idle, () => {
+    index = index + 1 === music_url.length ? 0 : index + 1;
+    if (index > 0) {
+      playSong(sub, player, connection, music_url[index], music_url, index);
+    } else {
+      sub.unsubscribe();
+      connection.destroy();
+    }
+  });
+}
 // exports.play_old = function (channelToSend, music_url) {
 //   music_url.forEach((element) => {
 //     channelToSend.join().then(
@@ -24,34 +83,3 @@
 //     }
 //   );
 // };
-
-exports.play = function (channelToSend, music_url) {
-  channelToSend.join().then(
-    async (connection) => {
-      playSong(channelToSend, connection, null, music_url, 0);
-    },
-    (err) => {
-      channelToSend.leave();
-      console.log(err);
-    }
-  );
-};
-
-function playSong(channelToSend, connection, url, music_url, index) {
-  if (index === 0) {
-    url = music_url[0];
-  }
-  const dispatcher = connection.play(url);
-  dispatcher.on("finish", (value) => {
-    if (!value) {
-      index = index + 1 === music_url.length ? 0 : index + 1;
-      if (index > 0) {
-        playSong(channelToSend, connection, music_url[index], music_url, index);
-      } else {
-        channelToSend.leave();
-      }
-    } else {
-      channelToSend.leave();
-    }
-  });
-}

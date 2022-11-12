@@ -398,13 +398,15 @@ client.on("messageCreate", (msg) => {
           if (channelId !== null) {
             const userList = channelUtils.getUserList(channelId, msg.client);
             //msg.channel.send(getUserListText(userList));
-            msg.channel.send(
-              ttp.getGroupFormationText(
-                utils.shuffle(utils.shuffle(userList)),
-                channelName,
-                groupSize
-              )
-            );
+            msg.channel.send({
+              embeds: [
+                ttp.getGroupFormationText(
+                  utils.shuffle(utils.shuffle(userList)),
+                  channelName,
+                  groupSize
+                ),
+              ],
+            });
           } else {
             msg.channel.send("Channel not found");
           }

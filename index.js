@@ -381,7 +381,9 @@ client.on("messageCreate", (msg) => {
           if (msg.content.indexOf("--") > 0) {
             groupSizeText = msg.content.substring(groupSizeIndex + 2);
             if (isNaN(groupSizeText)) {
-              msg.channel.send(utils.getErrorMessage(`Invalid group size`));
+              msg.channel.send({
+                embeds: [utils.getErrorMessage(`Invalid group size`)],
+              });
               return;
             }
             groupSize = Number(groupSizeText);
@@ -397,7 +399,6 @@ client.on("messageCreate", (msg) => {
           );
           if (channelId !== null) {
             const userList = channelUtils.getUserList(channelId, msg.client);
-            //msg.channel.send(getUserListText(userList));
             msg.channel.send({
               embeds: [
                 ttp.getGroupFormationText(
@@ -449,7 +450,7 @@ function scheduleJobs(data) {
         const embed = events.getEventAlarm(eventItem);
         channelTargets.forEach((channelId) => {
           let channel = client.channels.cache.get(channelId);
-          channel.send(embed);
+          channel.send({ embeds: [embed] });
         });
       });
     },
@@ -464,9 +465,11 @@ function scheduleJobs(data) {
       console.log(`'Posting today's activities`);
       channelTargets.forEach((channelId) => {
         let channel = client.channels.cache.get(channelId);
-        channel.send(
-          events.getDayEvents(Date.now(), guildName, vCalendarData.events)
-        );
+        channel.send({
+          embeds: [
+            events.getDayEvents(Date.now(), guildName, vCalendarData.events),
+          ],
+        });
       });
     },
     null,

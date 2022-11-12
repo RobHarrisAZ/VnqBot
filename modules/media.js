@@ -4,12 +4,12 @@ const {
   AudioPlayerStatus,
   createAudioResource,
   createAudioPlayer,
-  generateDependencyReport,
+  //  generateDependencyReport,
 } = require("@discordjs/voice");
 fs = require("fs");
 
 exports.play = function (channelToSend, music_url) {
-  console.log(generateDependencyReport());
+  //console.log(generateDependencyReport());
   const player = createAudioPlayer();
   const connection = joinVoiceChannel({
     channelId: channelToSend.id,

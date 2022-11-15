@@ -197,7 +197,7 @@ module.exports = function () {
   getZones = function (zoneIndex, zoneMultiplier, source) {
     zoneIndex = zoneIndex % zoneMultiplier;
     zoneIndex = zoneIndex < 0 ? 0 : zoneIndex;
-    return source[zoneIndex].zones.map((zone) => data.esoData.zones[zone].name)[0];
+    return source[zoneIndex].zones.map((zone) => data.esoData.zones[zone].name);
   };
 
   this.getMnmActivities = (options) => {
@@ -237,7 +237,7 @@ module.exports = function () {
             idx,
             multiplier,
             dlc ? data.esoData.spdDlcZones : data.esoData.spdZones
-          ) + `\n`;
+          )[0] + `\n`;
       }
       return activityText;
     } else {
@@ -247,7 +247,7 @@ module.exports = function () {
         periods,
         multiplier,
         dlc ? data.esoData.spdDlcZones : data.esoData.spdZones
-      );
+      )[0];
     }
   };
 };

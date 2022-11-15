@@ -379,6 +379,7 @@ exports.esoData = {
     { id: 18, zones: [38] },
     { id: 19, zones: [39] },
     { id: 20, zones: [40] },
+    { id: 21, zones: [41] },
   ],
   mnmActivities: [
     { id: 0, name: `Summerset` },

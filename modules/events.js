@@ -197,11 +197,11 @@ module.exports = function () {
   getZones = function (zoneIndex, zoneMultiplier, source) {
     zoneIndex = zoneIndex % zoneMultiplier;
     zoneIndex = zoneIndex < 0 ? 0 : zoneIndex;
-    return source[zoneIndex].zones.map((zone) => data.esoData.zones[zone].name);
+    return source[zoneIndex].zones.map((zone) => data.esoData.zones[zone].name)[0];
   };
 
   this.getMnmActivities = (options) => {
-    const baseDate = new Date("11/8/2021 20:00");
+    const baseDate = new Date("11/14/2022 20:00");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);
@@ -213,7 +213,7 @@ module.exports = function () {
       return activityText;
     } else {
       let diff_rot = differenceInWeeks(now, baseDate);
-      const activityIndex = diff_rot % 13;
+      const activityIndex = diff_rot % 15;
       return data.esoData.mnmActivities[activityIndex].name;
     }
   };

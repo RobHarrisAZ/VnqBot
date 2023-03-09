@@ -84,14 +84,14 @@ module.exports = function () {
   };
 
   this.getDayEvents = (day, guildName, eventItems) => {
-    let description = "";
+    let description = "No events found for today";
     let pledges = [];
     if (day === undefined) {
       day = new Date(Date.now());
     }
 
     const todaysEvents = this.getEvents(day, eventItems);
-
+    description = todaysEvents.length > 0 ? "" : description;
     todaysEvents.forEach((item) => {
       const info = `Event Name/Link: <a href="${item.link}">${
         item.event.name

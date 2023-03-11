@@ -42,7 +42,6 @@ function playSong(sub, player, connection, url, music_url, index) {
     url = music_url[0];
   }
   const song = createAudioResource(fs.createReadStream(url));
-  console.log(`IsReadable: ${song.readable}`);
   player.play(song);
   player.on(AudioPlayerStatus.Playing, () => {
     console.log(`Playing audio...`);

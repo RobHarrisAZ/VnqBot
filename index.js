@@ -463,7 +463,7 @@ function scheduleJobs(data) {
   CronJob.schedule(
     "0 5 * * *",
     function () {
-      console.log(`'Posting today's activities`);
+      console.log(`Posting today's activities`);
       channelTargets.forEach((channelId) => {
         let channel = client.channels.cache.get(channelId);
         channel.send({

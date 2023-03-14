@@ -31,9 +31,15 @@ exports.play = function (channelToSend, music_url) {
       console.log(err);
     }
   );
-  connection.on(VoiceConnectionStatus.Destroyed, () => {
+  connection.on(VoiceConnectionStatus.Disconnected, () => {
     console.log("Cleaning up..");
     player.stop();
+    connection.destroy();
+  });
+  connection.on(VoiceConnectionStatus.Destroyed, () => {
+    console.log("Cleaning up..");
+    player.removeAllListeners();
+    connection.removeAllListeners();
   });
 };
 
@@ -52,9 +58,18 @@ function playSong(sub, player, connection, url, music_url, index) {
       playSong(sub, player, connection, music_url[index], music_url, index);
     } else {
       sub.unsubscribe();
-      connection.destroy();
+      connection.disconnect();
     }
   });
+  player.on("error", (error) => {
+    console.error(error);
+    connection.disconnect();
+  });
+  // player.on(AudioPlayerStatus.AutoPaused, () => {
+  //   if (index !== 0) {
+  //    connection.disconnect();
+  //   }
+  // });
 }
 // exports.play_old = function (channelToSend, music_url) {
 //   music_url.forEach((element) => {

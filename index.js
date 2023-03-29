@@ -29,10 +29,11 @@ const client = new Client({
   partials: [Partials.Channel],
 });
 const fnf_url = join(__dirname, `vanquish_fnf.mp3`); //`http://infidelux.net/vanquish_fnf.mp3`;
+const fnf_bday_url = join(__dirname, `FNF_Birthday.mp3`);
 const music_url = [
   join(__dirname, `A_Friday_Night_Fight_Christmas.mp3`),
   join(__dirname, `Christmas_At_The_Chalamo.mp3`),
-  join (__dirname, `Qrystmas_In_The_Queue_-_Vanquish_2022.mp3`),
+  join(__dirname, `Qrystmas_In_The_Queue_-_Vanquish_2022.mp3`),
   // `http://infidelux.net/A_Friday_Night_Fight_Christmas.mp3`,
   // `http://infidelux.net/Christmas_At_The_Chalamo.mp3`,
 ];
@@ -253,6 +254,17 @@ client.on("messageCreate", (msg) => {
       ) {
         const channelToSend = msg.member.voice.channel;
         mediaUtil.play(channelToSend, [fnf_url]);
+      }
+      break;
+    case "/fnf bday":
+    case "!fnf bday":
+      // Check for officer permissions first
+      if (
+        msg.member.roles.cache.some((role) => role.name === "Officers") ||
+        msg.member.roles.cache.some((role) => role.name === "Admin")
+      ) {
+        const channelToSend = msg.member.voice.channel;
+        mediaUtil.play(channelToSend, [fnf_bday_url]);
       }
       break;
     case "/vnqmusic":

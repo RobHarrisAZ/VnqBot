@@ -201,7 +201,7 @@ module.exports = function () {
   };
 
   this.getMnmActivities = (options) => {
-    const baseDate = new Date("11/14/2022 20:00");
+    const baseDate = new Date("06/20/2023 20:00");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);
@@ -223,7 +223,7 @@ module.exports = function () {
       ? data.esoData.spdDlcZones.length
       : data.esoData.spdZones.length;
     const baseDate = dlc
-      ? new Date("04/26/2022 20:00")
+      ? new Date("06/20/2023 20:00")
       : new Date("04/26/2022 20:00");
     const now = new Date();
     const hour = new Date(now).getHours();

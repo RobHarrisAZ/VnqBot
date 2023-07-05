@@ -520,7 +520,9 @@ loadEvents = () => {
     vCalendarData.guildName = guildName;
     vCalendarData.guildSite = guildSite;
     vCalendarData.events = vCalendarData.events.filter(utils.isFutureDate);
-    vCalendarData.events.forEach(events.processEvents, vCalendarData);
+    if (vCalendarData.event_objects) {
+      vCalendarData.events.forEach(events.processEvents, vCalendarData);
+    }
     vCalendarData.events.sort(utils.dateSort);
     return vCalendarData;
   });

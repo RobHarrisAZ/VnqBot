@@ -29,8 +29,10 @@ module.exports = function () {
   };
 
   this.processEvents = function (item, index, arr, data) {
-    const eventObj = this.event_objects.find((row) => row.id === item.event_id);
-    const category = this.event_categories.find(
+    const eventObj = this.event_objects?.find(
+      (row) => row.id === item.event_id
+    );
+    const category = this.event_categories?.find(
       (row) => row.id === eventObj.event_category_id
     );
 

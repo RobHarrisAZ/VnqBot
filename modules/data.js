@@ -338,9 +338,9 @@ exports.esoData = {
     { id: 38, name: `High Isle (Public Dungeons)` },
     { id: 39, name: `High Isle (Overland & Delves)` },
     { id: 40, name: `The Deadlands` },
-    { id: 41, name: `Galen` },
-    { id: 42, name: `Apocrypha (Public Dungeons)` },
-    { id: 43, name: `Apocrypha (Overland & Delves)` },
+    { id: 41, name: `Apocrypha (Public Dungeons)` },
+    { id: 42, name: `Apocrypha (Overland & Delves)` },
+    { id: 43, name: `Galen` },
   ],
   spdZones: [
     { id: 0, zones: [12] },

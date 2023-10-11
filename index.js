@@ -39,7 +39,7 @@ const music_url = [
 ];
 
 let vCalendarData = null;
-let channelTargets = [process.env.CHANNEL1, process.env.CHANNEL2];
+let channelTargets = [process.env.CHANNEL1];
 let applicantData = [];
 
 client.on("ready", () => {

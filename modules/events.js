@@ -203,7 +203,7 @@ module.exports = function () {
   };
 
   this.getMnmActivities = (options) => {
-    const baseDate = new Date("06/20/2023 20:00");
+    const baseDate = new Date("05/14/2024 20:00");
     const now = Date.now();
     const hour = new Date(now).getHours();
     const day = getDay(now);
@@ -215,7 +215,7 @@ module.exports = function () {
       return activityText;
     } else {
       let diff_rot = differenceInWeeks(now, baseDate);
-      const activityIndex = diff_rot % 15;
+      const activityIndex = diff_rot % data.esoData.mnmActivities.length;
       return data.esoData.mnmActivities[activityIndex].name;
     }
   };
@@ -225,7 +225,7 @@ module.exports = function () {
       ? data.esoData.spdDlcZones.length
       : data.esoData.spdZones.length;
     const baseDate = dlc
-      ? new Date("06/20/2023 20:00")
+      ? new Date("05/21/2024 20:00")
       : new Date("04/26/2022 20:00");
     const now = new Date();
     const hour = new Date(now).getHours();

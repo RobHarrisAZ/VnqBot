@@ -35,6 +35,7 @@ const music_url = [
   join(__dirname, `Christmas_At_The_Chalamo.mp3`),
   join(__dirname, `Qrystmas_In_The_Queue_-_Vanquish_2022.mp3`),
   join(__dirname, `Vanquish4Christmas.mp3`),
+  join(__dirname, `The_Vanquish_Christmas_Elf_Song.mp3gi`),
   // `http://infidelux.net/A_Friday_Night_Fight_Christmas.mp3`,
   // `http://infidelux.net/Christmas_At_The_Chalamo.mp3`,
 ];

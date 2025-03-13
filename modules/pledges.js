@@ -12,7 +12,7 @@ exports.getDailyPledges = function (dateTime) {
   // Math.floor(elapsed / 86400);
   const hour = new Date(dateTime).getHours();
 
-  const baseDate = new Date("03/12/2024 23:00"); //new Date("08/21/2022 23:00");
+  const baseDate = new Date("03/11/2025 23:00"); //new Date("08/21/2022 23:00");
   if (!dateTime) {
     dateTime = Date.now();
   }

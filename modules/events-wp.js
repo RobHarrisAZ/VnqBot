@@ -12,7 +12,7 @@ module.exports = function () {
   const turndownService = new TurndownService();
 
   this.getEventData = function (guildUrl) {
-    return utils.httpGet(`${guildUrl}/wp-json/tribe/events/v1/events?page=1&per_page=500`).then((cal) => cal);
+    return utils.httpGet(`${guildUrl}/wp-json/tribe/events/v1/events?page=1&per_page=100`).then((cal) => cal);
   };
 
   this.getEvents = (day, eventItems) => {
@@ -80,7 +80,7 @@ module.exports = function () {
 
     return new EmbedBuilder()
       .setURL(item.event.url)
-      .setImage(item.event.image.url)
+      .setThumbnail(item.event.image.url)
       .setTitle(item.event.title)
       .setColor(0x00ffff)
       .setDescription(description ? description.substring(0, 2048) : "");

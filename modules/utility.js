@@ -87,6 +87,11 @@ exports.isFutureDate = function (item) {
   return isAfter(new Date(item.date), Date.now());
 };
 
+exports.isWpFutureDate = function (item) {
+  const itemDate = convertDate(item.utc_start_date);
+  return isAfter(new Date(itemDate), new Date());
+};
+
 exports.dateSort = function (item1, item2) {
   if (item1.hasOwnProperty("eventDate")) {
     if (
@@ -126,3 +131,7 @@ exports.getRandomInteger = function (min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
 };
+
+convertDate = (dateString) => `${dateString.replace(' ', 'T')}Z`;
+
+exports.convertDateToUtc = (dateString) => convertDate(dateString);//`${dateString.replace(' ', 'T')}Z`;

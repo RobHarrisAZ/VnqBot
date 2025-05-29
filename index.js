@@ -14,8 +14,10 @@ const channelUtils = require("./modules/channels");
 const pledgeUtils = require("./modules/pledges");
 const ttp = require("./modules/ttp");
 const eventUtils = require("./modules/events");
+const wpEventUtils = require("./modules/events-wp");
 const mediaUtil = require("./modules/media");
 const events = new eventUtils();
+const wpEvents = new wpEventUtils();
 
 const guildSite = process.env.GUILD_SITE;
 const guildName = process.env.GUILD_NAME;
@@ -28,7 +30,7 @@ const client = new Client({
   ],
   partials: [Partials.Channel],
 });
-const fnf_url = join(__dirname, `vanquish_fnf.mp3`); //`http://infidelux.net/vanquish_fnf.mp3`;
+const fnf_url = join(__dirname, `vanquish_fnf.mp3`); 
 const fnf_bday_url = join(__dirname, `FNF_Birthday.mp3`);
 const music_url = [
   join(__dirname, `A_Friday_Night_Fight_Christmas.mp3`),
@@ -36,19 +38,17 @@ const music_url = [
   join(__dirname, `Qrystmas_In_The_Queue_-_Vanquish_2022.mp3`),
   join(__dirname, `Vanquish4Christmas.mp3`),
   join(__dirname, `The_Vanquish_Christmas_Elf_Song.mp3gi`),
-  // `http://infidelux.net/A_Friday_Night_Fight_Christmas.mp3`,
-  // `http://infidelux.net/Christmas_At_The_Chalamo.mp3`,
 ];
 
+let vEventData = null;
 let vCalendarData = null;
 let channelTargets = [process.env.CHANNEL1];
-let applicantData = [];
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  loadEvents().then((data) => {
+  loadWpEvents().then((data) => {//loadEvents().then((data) => {
     console.log(`Loaded events`);
-    scheduleJobs(data);
+    scheduleWpJobs(data);//scheduleJobs(data);
   });
 });
 
@@ -62,11 +62,12 @@ client.on("messageCreate", (msg) => {
       break;
     case "/refresh":
     case "!refresh":
-      loadEvents().then(() => {
+      loadWpEvents().then(() => {
+      //loadEvents().then(() => {
         const embed2 = new EmbedBuilder()
           .setTitle("Events Retrieved!")
           .setColor(0x00ffff)
-          .setDescription(`Count: ${vCalendarData.events.length}`);
+          .setDescription(`Count: ${vEventData.events.length}`);
         msg.channel.send({ embeds: [embed2] });
       });
       break;
@@ -77,7 +78,8 @@ client.on("messageCreate", (msg) => {
           events.getDayEvents(
             new Date(Date.now()),
             guildName,
-            vCalendarData.events
+            vEventData.events
+            //vCalendarData.events
           ),
         ],
       });
@@ -88,7 +90,7 @@ client.on("messageCreate", (msg) => {
       break;
     case "/checkevents":
     case "!checkevents":
-      events.checkEvents(channelTargets, vCalendarData.events, msg.client);
+      events.checkEvents(channelTargets, vEventData.events, msg.client);
       break;
     case "/pledges":
     case "!pledges":
@@ -299,7 +301,6 @@ client.on("messageCreate", (msg) => {
         msg.content.startsWith("!roll ") ||
         msg.content.startsWith("/roll ")
       ) {
-        // && !isNaN(msg.content.substr(msg.content.indexOf(' ') + 1))) {
         // Determine if there is one parameter or two
         const lastIndex = msg.content.lastIndexOf(" ");
         const index = msg.content.indexOf(" ");
@@ -362,9 +363,9 @@ client.on("messageCreate", (msg) => {
         const index = parseInt(
           msg.content.substring(msg.content.indexOf(" ") + 1)
         );
-        if (vCalendarData.events.length > index + 1) {
+        if (vEventData.events.length > index + 1) {
           msg.channel.send({
-            embeds: [events.getEventAlarm(vCalendarData.events[index])],
+            embeds: [wpEvents.getEventAlarm(vEventData.events[index])],
           });
         } else {
           msg.reply(utils.getErrorMessage("Invalid event"));
@@ -380,10 +381,10 @@ client.on("messageCreate", (msg) => {
         );
         msg.channel.send({
           embeds: [
-            events.getDayEvents(
+            wpEvents.getDayEvents(
               addDays(Date.now(), numberOfDays),
               guildName,
-              vCalendarData.events
+              vEventData.events
             ),
           ],
         });
@@ -458,11 +459,11 @@ function scheduleJobs(data) {
       console.log("Checking upcoming events");
       const upcoming = events.checkEvents(
         channelTargets,
-        vCalendarData.events,
+        vEventData.events,
         client
       );
       upcoming.forEach(function (eventItem) {
-        const embed = events.getEventAlarm(eventItem);
+        const embed = wpEvents.getEventAlarm(eventItem);
         channelTargets.forEach((channelId) => {
           let channel = client.channels.cache.get(channelId);
           channel.send({ embeds: [embed] });
@@ -482,7 +483,7 @@ function scheduleJobs(data) {
         let channel = client.channels.cache.get(channelId);
         channel.send({
           embeds: [
-            events.getDayEvents(Date.now(), guildName, vCalendarData.events),
+            wpEvents.getDayEvents(Date.now(), guildName, vEventData.events),
           ],
         });
       });
@@ -491,31 +492,77 @@ function scheduleJobs(data) {
     true,
     "America/Los_Angeles"
   );
-  // Hourly check for new applications
-  // CronJob.schedule(
-  //   "*/60 * * * *",
-  //   function () {
-  //     console.log(`Checking for new open applications`);
-  //     const currentApps = applicantData.map((row) => row.id);
-  //     appUtils.processOpenApplications(guildSite).then((appData) => {
-  //       const newApps = appData.filter((app) => !currentApps.includes(app.id));
-  //       applicantData = [...appData];
-  //       if (newApps.length) {
-  //         let channel = client.channels.cache.get(process.env.CHANNEL3);
-  //         newApps.forEach((app) => {
-  //           appUtils
-  //             .formatApplication(app.id, guildSite)
-  //             .then((message) => channel.send(message));
-  //         });
-  //       }
-  //     });
-  //   },
-  //   null,
-  //   true,
-  //   "America/Los_Angeles"
-  // );
 }
+function scheduleWpJobs(data) {
+  // Daily event load @ 12:10am PT
+  CronJob.schedule(
+    "10 0 * * *",
+    function () {
+      loadWpEvents().then(() => {
+        console.log(`Events Refreshed`);
+      });
+    },
+    null,
+    true,
+    "America/Los_Angeles"
+  );
+  // Check for upcoming events every 15 minutes
+  CronJob.schedule(
+    "*/15 * * * *",
+    function () {
+      console.log("Checking upcoming events");
+      const upcoming = wpEvents.checkEvents(
+        channelTargets,
+        vEventData.events,
+        client
+      );
+      upcoming.forEach(function (eventItem) {
+        const embed = wpEvents.getEventAlarm(eventItem);
+        channelTargets.forEach((channelId) => {
+          let channel = client.channels.cache.get(channelId);
+          channel.send({ embeds: [embed] });
+        });
+      });
+    },
+    null,
+    true,
+    "America/Los_Angeles"
+  );
+  // Daily Today's Activities @ 5am PT
+  CronJob.schedule(
+    "0 5 * * *",
+    function () {
+      console.log(`Posting today's activities`);
+      channelTargets.forEach((channelId) => {
+        let channel = client.channels.cache.get(channelId);
+        channel.send({
+          embeds: [
+            wpEvents.getDayEvents(Date.now(), guildName, vEventData.events),
+          ],
+        });
+      });
+    },
+    null,
+    true,
+    "America/Los_Angeles"
+  );
+}
+loadWpEvents = () => {
+  return wpEvents.getEventData(guildSite).then(function (data) {
+    vEventData = data;
+    vEventData.guildName = guildName;
+    vEventData.guildSite = guildSite;
+    // TODO: Update this call to filter the data
+    vEventData.events = vEventData.events.filter(utils.isWpFutureDate);
+    // TODO: Update this to match new schema
+    if (vEventData.events) {
+      vEventData.events.forEach(wpEvents.processEvents, vEventData);
+    }
 
+    vEventData.events.sort(utils.dateSort);
+    return vEventData;
+  });
+};
 loadEvents = () => {
   return events.getEventData(guildSite).then(function (data) {
     vCalendarData = data;
@@ -576,52 +623,3 @@ function getHelpMessage() {
     .addFields({ name: `/version`, value: `Show Bot version info.` })
     .setColor(0x750080);
 }
-
-// function getUserListText(userList) {
-//     let description = `Channel Members:<br/>`;
-//     let users = ``;
-//     userList.forEach(item => {
-//         users += `${item.name}<br/>`
-//     });
-
-//     return new EmbedBuilder()
-//         .setTitle('Channel Members')
-//         .setColor(0x750080)
-//         .setDescription(turndownService.turndown(`${description}${users}`));
-// }
-// function getPledges(pageToken) {
-//     pageToken = pageToken || '';
-//     const uri = `https://www.googleapis.com/calendar/v3/calendars/${process.env.CALENDAR_ID}/events?key=${process.env.GAPI_KEY}&pageToken=${pageToken}`;
-//     httpGet(uri)
-//         .then(data => {
-//             pledgeData = pledgeData || data;
-//             pledgeItems = pledgeItems.concat(data.items);
-//             if (data.nextPageToken) {
-//                 getPledges(data.nextPageToken);
-//             } else {
-//                 pledgeData.items = pledgeItems.filter(item => item.start).sort(utils.dateSort);
-//                 pledges = googleCalendarListSort.organizeByDate(pledgeData).filter(isFutureEvent);
-//             }
-//         });
-// }
-// function isFutureEvent(item) {
-//     const now = new Date();
-//     if (item.hasOwnProperty('date')) {
-//         const dateString = `${item.date.substr(2, 2)}/${item.date.substr(0, 2)}/${item.date.substr(4, 4)}`;
-//         const eventDate = new Date(dateString);
-//         console.log(dateString);
-//         return now.getTime() < eventDate.getTime();
-//     }
-// };
-// function getChannelList() {
-//     let channelList = '';
-//     channelTargets.forEach(item => {
-//         channelList = channelList.concat(`ID:${item.id}, Name: ${item.name} <br/>`);
-//     });
-//     return new EmbedBuilder()
-//         .setTitle('Channel List')
-//         .setColor(0xFF00FF)
-//         .setDescription(turndownService.turndown(channelList));
-// }
-
-//  TODO: Get latest activity from the website and output to a channel on interval

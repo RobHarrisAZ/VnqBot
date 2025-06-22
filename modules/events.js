@@ -96,7 +96,7 @@ module.exports = function () {
     description = todaysEvents.length > 0 ? "" : description;
     todaysEvents.forEach((item) => {
       const info = `Event Name/Link: <a href="${item.link}">${
-        item.event.title
+        item.event.name
       }</a>
         <br/>PT: ${format(
           new Date().setHours(

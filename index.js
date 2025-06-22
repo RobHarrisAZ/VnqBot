@@ -46,9 +46,9 @@ let channelTargets = [process.env.CHANNEL1];
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  loadWpEvents().then((data) => {//loadEvents().then((data) => {
+  loadWpEvents().then((data) => {
     console.log(`Loaded events`);
-    scheduleWpJobs(data);//scheduleJobs(data);
+    scheduleWpJobs(data);
   });
 });
 
@@ -63,7 +63,6 @@ client.on("messageCreate", (msg) => {
     case "/refresh":
     case "!refresh":
       loadWpEvents().then(() => {
-      //loadEvents().then(() => {
         const embed2 = new EmbedBuilder()
           .setTitle("Events Retrieved!")
           .setColor(0x00ffff)
@@ -75,11 +74,10 @@ client.on("messageCreate", (msg) => {
     case "!today":
       msg.channel.send({
         embeds: [
-          events.getDayEvents(
+          wpEvents.getDayEvents(
             new Date(Date.now()),
             guildName,
             vEventData.events
-            //vCalendarData.events
           ),
         ],
       });
@@ -90,7 +88,7 @@ client.on("messageCreate", (msg) => {
       break;
     case "/checkevents":
     case "!checkevents":
-      events.checkEvents(channelTargets, vEventData.events, msg.client);
+      wpEvents.checkEvents(channelTargets, vEventData.events, msg.client);
       break;
     case "/pledges":
     case "!pledges":

@@ -37,7 +37,7 @@ const music_url = [
   join(__dirname, `Christmas_At_The_Chalamo.mp3`),
   join(__dirname, `Qrystmas_In_The_Queue_-_Vanquish_2022.mp3`),
   join(__dirname, `Vanquish4Christmas.mp3`),
-  join(__dirname, `The_Vanquish_Christmas_Elf_Song.mp3gi`),
+  join(__dirname, `The_Vanquish_Christmas_Elf_Song.mp3`),
 ];
 
 let vEventData = null;

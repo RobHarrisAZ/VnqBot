@@ -31,6 +31,7 @@ const client = new Client({
   partials: [Partials.Channel],
 });
 const fnf_url = join(__dirname, `vanquish_fnf.mp3`); 
+const fnf_url_alt = join (__dirname, `Vanquish_FNF_Alt.m.mp3`);
 const fnf_bday_url = join(__dirname, `FNF_Birthday.mp3`);
 const music_url = [
   join(__dirname, `A_Friday_Night_Fight_Christmas.mp3`),
@@ -247,6 +248,16 @@ client.on("messageCreate", (msg) => {
         ],
       });
       break;
+    case "/fnf intro2":
+    case "!fnf intro2":
+      if (
+        msg.member.roles.cache.some((role) => role.name === "Officers") ||
+        msg.member.roles.cache.some((role) => role.name === "Admin")
+      ) {
+        const channelToSend = msg.member.voice.channel;
+        mediaUtil.play(channelToSend, [fnf_url_alt]);
+      }
+      break;        
     case "/fnf intro":
     case "!fnf intro":
       // Check for officer permissions first

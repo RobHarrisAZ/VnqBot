@@ -33,6 +33,7 @@ const client = new Client({
 const fnf_url = join(__dirname, `vanquish_fnf.mp3`); 
 const fnf_url_alt = join (__dirname, `Vanquish_FNF_Alt.m.mp3`);
 const fnf_bday_url = join(__dirname, `FNF_Birthday.mp3`);
+const fnf_bday_alt = join(__dirname, `FNF_Birthday_NoHost.JPEG.mp3`);
 const music_url = [
   join(__dirname, `A_Friday_Night_Fight_Christmas.mp3`),
   join(__dirname, `Christmas_At_The_Chalamo.mp3`),
@@ -279,6 +280,18 @@ client.on("messageCreate", (msg) => {
       ) {
         const channelToSend = msg.member.voice.channel;
         mediaUtil.play(channelToSend, [fnf_bday_url]);
+      }
+      break;
+    case "/fnf bday 12":
+    case "!fnf bday 12":
+      // Check for officer permissions first
+      // Check for officer permissions first
+      if (
+        msg.member.roles.cache.some((role) => role.name === "Officers") ||
+        msg.member.roles.cache.some((role) => role.name === "Admin")
+      ) {
+        const channelToSend = msg.member.voice.channel;
+        mediaUtil.play(channelToSend, [fnf_bday_alt]);
       }
       break;
     case "/vnqmusic":

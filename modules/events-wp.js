@@ -19,7 +19,9 @@ module.exports = function () {
     if (day === undefined) {
       day = Date.now();
     }
-
+    if (eventItems === undefined) {
+      return [];
+    }
     return eventItems
       .filter((item) => {
         const eventDate = new Date(item.eventDate);

@@ -28,10 +28,15 @@ exports.httpGet = function (uri) {
     method: "GET",
     headers: {
       Accept: "application/json",
+      "User-Agent": "vnqbot",      
     },
   })
     .then((response) => {
-      return response.json();
+      if (response.headers.get("content-type").includes("application/json")) {
+        return response.json();
+      } else {
+        return {};
+      }
     })
     .catch((err) => {
       console.log(err);

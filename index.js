@@ -69,7 +69,7 @@ client.on("messageCreate", (msg) => {
         const embed2 = new EmbedBuilder()
           .setTitle("Events Retrieved!")
           .setColor(0x00ffff)
-          .setDescription(`Count: ${vEventData.events.length}`);
+          .setDescription(`Count: ${vEventData?.events?.length}`);
         msg.channel.send({ embeds: [embed2] });
       });
       break;
@@ -576,13 +576,15 @@ loadWpEvents = () => {
     vEventData.guildName = guildName;
     vEventData.guildSite = guildSite;
     // TODO: Update this call to filter the data
-    vEventData.events = vEventData.events.filter(utils.isWpFutureDate);
+    vEventData.events = vEventData?.events?.filter(utils.isWpFutureDate);
     // TODO: Update this to match new schema
     if (vEventData.events) {
       vEventData.events.forEach(wpEvents.processEvents, vEventData);
+      vEventData?.events?.sort(utils.dateSort);
+    } else {
+      console.log("No events found in data- possibly returning captcha page?");
     }
 
-    vEventData.events.sort(utils.dateSort);
     return vEventData;
   });
 };
